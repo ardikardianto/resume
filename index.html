@@ -64,7 +64,7 @@
     .page {
       width: min(100% - 48px, 980px);
       margin: 0 auto;
-      padding: 46px 0 72px;
+      padding: 138px 0 72px;
     }
 
     .site-header,
@@ -79,8 +79,18 @@
     }
 
     .site-header {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      z-index: 20;
+      width: min(100% - 48px, 980px);
+      transform: translateX(-50%);
       align-items: center;
-      padding-bottom: 82px;
+      padding: 22px 0 20px;
+      border-bottom: 1px solid rgba(222, 219, 208, 0.78);
+      background: rgba(245, 244, 237, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       font-family: var(--ui);
       font-size: 13px;
       color: var(--muted);
@@ -339,7 +349,7 @@
 
       .page {
         width: min(100% - 32px, 980px);
-        padding-top: 28px;
+        padding-top: 116px;
       }
 
       .site-header,
@@ -353,7 +363,8 @@
       }
 
       .site-header {
-        padding-bottom: 58px;
+        width: min(100% - 32px, 980px);
+        padding: 18px 0 16px;
       }
 
       .nav {
