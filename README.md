@@ -11,6 +11,8 @@ The site presents a concise academic portfolio drawn from `Ardianto's Resume.pdf
 - `assets/Profile.png` - circular profile photo used in the hero section.
 - `assets/resume-preview.png` - resume preview image used in the profile section and social metadata.
 - `scripts/update-site-metrics.py` - monthly public scholarly metrics updater used by GitHub Actions.
+- `scripts/update-resume-pdf-metrics.py` - keeps visible resume PDF metrics aligned with `index.html`.
+- `scripts/render-resume-preview.py` - regenerates the resume preview image from the first PDF page.
 - `.github/workflows/update-site-metrics.yml` - scheduled workflow that refreshes public scholarly metrics.
 
 ## Design Direction
@@ -66,6 +68,8 @@ python3 scripts/update-site-metrics.py
 ```
 
 The workflow commits only when a metric changes. If ResearchGate blocks automated access, the existing ResearchGate values are preserved and the other metrics still update.
+
+The same workflow also overlays the current metrics onto `Ardianto's Resume.pdf` and regenerates `assets/resume-preview.png`, so the downloadable resume and site preview stay aligned with the homepage.
 
 ## Profile Links
 

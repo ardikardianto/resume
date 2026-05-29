@@ -23,8 +23,17 @@ jobs:
       - name: Update public scholarly metrics
         run: python scripts/update-site-metrics.py
 
+      - name: Install PDF update dependencies
+        run: python -m pip install pypdf reportlab pymupdf
+
+      - name: Update resume PDF metrics
+        run: python scripts/update-resume-pdf-metrics.py
+
+      - name: Render resume preview image
+        run: python scripts/render-resume-preview.py
+
       - name: Commit changed metrics
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update public scholarly metrics"
-          file_pattern: index.html
+          file_pattern: index.html "Ardianto's Resume.pdf" assets/resume-preview.png
