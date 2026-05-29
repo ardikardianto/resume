@@ -10,8 +10,8 @@ The site presents a concise academic portfolio drawn from `Ardianto's Resume.pdf
 - `Ardianto's Resume.pdf` - source resume and downloadable PDF linked from the site.
 - `assets/Profile.png` - circular profile photo used in the hero section.
 - `assets/resume-preview.png` - resume preview image used in the profile section and social metadata.
-- `scripts/update-scholar-citations.py` - monthly Google Scholar citation updater used by GitHub Actions.
-- `.github/workflows/update-scholar-citations.yml` - scheduled workflow that refreshes the Google Scholar citation metric.
+- `scripts/update-site-metrics.py` - monthly public scholarly metrics updater used by GitHub Actions.
+- `.github/workflows/update-site-metrics.yml` - scheduled workflow that refreshes public scholarly metrics.
 
 ## Design Direction
 
@@ -49,17 +49,23 @@ For GitHub Pages:
 3. Set the source to the `main` branch.
 4. Use the repository root as the publishing directory.
 
-## Monthly Citation Update
+## Monthly Metrics Update
 
-The Google Scholar citation number in `index.html` is marked with `data-metric="google-scholar-citations"` and is refreshed by a GitHub Actions workflow on the first day of every month.
+The public scholarly metrics in `index.html` are marked with `data-metric` attributes and refreshed by a GitHub Actions workflow on the first day of every month.
+
+The updater covers:
+
+- ORCID listed works from the ORCID public API.
+- Google Scholar citations from the public Google Scholar profile.
+- ResearchGate reads and citations on a best-effort basis from the public ResearchGate profile.
 
 You can also run the updater manually:
 
 ```bash
-python3 scripts/update-scholar-citations.py
+python3 scripts/update-site-metrics.py
 ```
 
-The workflow commits only when the Google Scholar citation count changes.
+The workflow commits only when a metric changes. If ResearchGate blocks automated access, the existing ResearchGate values are preserved and the other metrics still update.
 
 ## Profile Links
 

@@ -1,4 +1,4 @@
-name: Update Google Scholar citations
+name: Update site metrics
 
 on:
   schedule:
@@ -20,11 +20,11 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Update Google Scholar citation count
-        run: python scripts/update-scholar-citations.py
+      - name: Update public scholarly metrics
+        run: python scripts/update-site-metrics.py
 
-      - name: Commit changed citation count
+      - name: Commit changed metrics
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "Update Google Scholar citation count"
+          commit_message: "Update public scholarly metrics"
           file_pattern: index.html
