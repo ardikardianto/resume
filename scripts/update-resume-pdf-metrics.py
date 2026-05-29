@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Overlay current site metrics onto the resume PDF.
 
-The repository only stores the final PDF, not the original design source. This
-script keeps the visible PDF metrics aligned with index.html by covering the
-known metric areas and drawing the current values back on top.
+The original resume design source is not available, so this script keeps a
+clean base PDF in assets/source/resume-base.pdf and creates the public resume
+PDF from that base on each run.
 """
 
 from __future__ import annotations
@@ -20,6 +20,7 @@ from reportlab.pdfgen import canvas
 ROOT = Path(__file__).resolve().parents[1]
 INDEX_PATH = ROOT / "index.html"
 PDF_PATH = ROOT / "Ardianto's Resume.pdf"
+BASE_PDF_PATH = ROOT / "assets" / "source" / "resume-base.pdf"
 
 PAGE_WIDTH = 594.95996
 PAGE_HEIGHT = 841.91998
@@ -59,14 +60,14 @@ def draw_wrapped(c: canvas.Canvas, text: str, x: float, y: float, width: float, 
         c.drawString(x, y - offset * leading, line)
 
 
-def draw_metric(c: canvas.Canvas, x: float, y: float, value: str, suffix: str, label: str, label_width: float, label_size: float = 9.8) -> None:
+def draw_metric(c: canvas.Canvas, x: float, y: float, value: str, suffix: str, label: str, label_x: float, label_width: float) -> None:
     c.setFillColor(ACCENT)
     c.setFont("Times-Roman", 17.4)
     c.drawString(x, y, value)
     if suffix:
         c.setFont("Times-Roman", 10.4)
         c.drawString(x + c.stringWidth(value, "Times-Roman", 17.4) + 2.0, y + 1.0, suffix)
-    draw_wrapped(c, label, x, y - 13.0, label_width, label_size, 11.0)
+    draw_wrapped(c, label, label_x, y - 1.0, label_width, 9.8, 11.2)
 
 
 def page_one_overlay(metrics: dict[str, str]) -> PdfReader:
@@ -77,10 +78,10 @@ def page_one_overlay(metrics: dict[str, str]) -> PdfReader:
     c.rect(28, 705, 542, 66, stroke=0, fill=1)
     c.rect(82, 407, 470, 30, stroke=0, fill=1)
 
-    draw_metric(c, 36, 756, "10", "yrs", "translation, language teaching, and research track since 2016", 76, 9.2)
-    draw_metric(c, 180, 756, metrics["orcid-works"], "works", "ORCID-listed publications, chapters, proceedings, and theses", 86)
-    draw_metric(c, 320, 756, metrics["researchgate-reads"], "", "ResearchGate reads across public research profile", 92)
-    draw_metric(c, 470, 756, metrics["google-scholar-citations"], "", "Google Scholar citations", 76)
+    draw_metric(c, 36, 750, "10", "yrs", "translation, language teaching, and research track since 2016", 80, 76)
+    draw_metric(c, 180, 750, metrics["orcid-works"], "works", "ORCID-listed publications, chapters, proceedings, and theses", 244, 88)
+    draw_metric(c, 320, 750, metrics["researchgate-reads"], "", "ResearchGate reads across public research profile", 386, 92)
+    draw_metric(c, 470, 750, metrics["google-scholar-citations"], "", "Google Scholar citations", 512, 70)
 
     c.setFont("Times-Roman", 9.6)
     c.setFillColor(INK)
@@ -97,7 +98,7 @@ def page_two_overlay(metrics: dict[str, str]) -> PdfReader:
     c = canvas.Canvas(packet, pagesize=(PAGE_WIDTH, PAGE_HEIGHT))
 
     c.setFillColor(PAPER)
-    c.rect(34, 754, 528, 38, stroke=0, fill=1)
+    c.rect(34, 744, 528, 48, stroke=0, fill=1)
 
     c.setFont("Times-Roman", 9.8)
     c.setFillColor(ACCENT)
@@ -126,7 +127,7 @@ def main() -> int:
         "google-scholar-citations": metric("google-scholar-citations"),
     }
 
-    base = PdfReader(str(PDF_PATH))
+    base = PdfReader(str(BASE_PDF_PATH))
     overlays = [page_one_overlay(metrics), page_two_overlay(metrics)]
     writer = PdfWriter()
     for index, page in enumerate(base.pages):

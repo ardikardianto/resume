@@ -10,6 +10,7 @@ The site presents a concise academic portfolio drawn from `Ardianto's Resume.pdf
 - `Ardianto's Resume.pdf` - source resume and downloadable PDF linked from the site.
 - `assets/Profile.png` - circular profile photo used in the hero section.
 - `assets/resume-preview.png` - resume preview image used in the profile section and social metadata.
+- `assets/source/resume-base.pdf` - clean base PDF used to regenerate the public resume metrics.
 - `scripts/update-site-metrics.py` - monthly public scholarly metrics updater used by GitHub Actions.
 - `scripts/update-resume-pdf-metrics.py` - keeps visible resume PDF metrics aligned with `index.html`.
 - `scripts/render-resume-preview.py` - regenerates the resume preview image from the first PDF page.
