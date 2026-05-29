@@ -81,14 +81,14 @@
     .site-header {
       position: fixed;
       top: 0;
-      left: 50%;
+      left: 0;
+      right: 0;
       z-index: 20;
-      width: min(100% - 48px, 980px);
-      transform: translateX(-50%);
+      width: 100%;
       align-items: center;
-      padding: 22px 0 20px;
-      border-bottom: 1px solid rgba(222, 219, 208, 0.78);
-      background: rgba(245, 244, 237, 0.88);
+      padding: 22px max(24px, calc((100vw - 980px) / 2)) 20px;
+      border-bottom: 1px solid var(--rule);
+      background: var(--paper);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       font-family: var(--ui);
@@ -185,6 +185,7 @@
     main > section {
       padding: 52px 0;
       border-top: 1px solid var(--rule);
+      scroll-margin-top: 100px;
     }
 
     .section-head {
@@ -363,8 +364,7 @@
       }
 
       .site-header {
-        width: min(100% - 32px, 980px);
-        padding: 18px 0 16px;
+        padding: 18px 16px 16px;
       }
 
       .nav {
@@ -421,17 +421,16 @@
   </style>
 </head>
 <body>
+  <header class="site-header">
+    <a class="brand" href="#">Ardik Ardianto</a>
+    <nav class="nav" aria-label="Primary navigation">
+      <a href="#work">Work</a>
+      <a href="#research">Research</a>
+      <a href="#profile">Profile</a>
+      <a href="Ardianto's Resume.pdf">Resume</a>
+    </nav>
+  </header>
   <div class="page">
-    <header class="site-header">
-      <a class="brand" href="#">Ardik Ardianto</a>
-      <nav class="nav" aria-label="Primary navigation">
-        <a href="#work">Work</a>
-        <a href="#research">Research</a>
-        <a href="#profile">Profile</a>
-        <a href="Ardianto's Resume.pdf">Resume</a>
-      </nav>
-    </header>
-
     <main>
       <section class="hero" aria-labelledby="intro-title">
         <figure class="profile-photo">
