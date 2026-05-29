@@ -1,4 +1,4 @@
-# Ardik Ardianto Personal Homepage
+# Personal Homepage
 
 This repository contains the static personal homepage for Ardik Ardianto, a lecturer, translator, and researcher based in Indonesia.
 
