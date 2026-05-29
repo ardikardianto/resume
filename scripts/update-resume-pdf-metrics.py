@@ -98,17 +98,17 @@ def page_two_overlay(metrics: dict[str, str]) -> PdfReader:
     c = canvas.Canvas(packet, pagesize=(PAGE_WIDTH, PAGE_HEIGHT))
 
     c.setFillColor(PAPER)
-    c.rect(34, 730, 528, 62, stroke=0, fill=1)
+    c.rect(34, 754, 528, 38, stroke=0, fill=1)
 
     c.setFont("Times-Roman", 9.8)
     c.setFillColor(ACCENT)
     c.drawString(36, 782, "Publication record centered on language in use.")
     c.setFillColor(INK)
     c.drawString(230, 782, "Selected work covers translation style, contextual configuration,")
-    c.drawString(36, 768, "sociolinguistics, discourse, code-switching, and English teaching materials. Public profile:")
+    c.drawString(36, 769, "sociolinguistics, discourse, code-switching, and English teaching materials. Public profile:")
     c.drawString(
         36,
-        754,
+        756,
         f"{metrics['orcid-works']} ORCID works · 16 ResearchGate publications · "
         f"{metrics['researchgate-citations']} ResearchGate citations · "
         f"{metrics['google-scholar-citations']} Google Scholar citations.",
