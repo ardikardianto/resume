@@ -10,6 +10,8 @@ The site presents a concise academic portfolio drawn from `Ardianto's Resume.pdf
 - `Ardianto's Resume.pdf` - source resume and downloadable PDF linked from the site.
 - `assets/Profile.png` - circular profile photo used in the hero section.
 - `assets/resume-preview.png` - resume preview image used in the profile section and social metadata.
+- `scripts/update-scholar-citations.py` - monthly Google Scholar citation updater used by GitHub Actions.
+- `.github/workflows/update-scholar-citations.yml` - scheduled workflow that refreshes the Google Scholar citation metric.
 
 ## Design Direction
 
@@ -46,6 +48,18 @@ For GitHub Pages:
 2. Go to **Pages**.
 3. Set the source to the `main` branch.
 4. Use the repository root as the publishing directory.
+
+## Monthly Citation Update
+
+The Google Scholar citation number in `index.html` is marked with `data-metric="google-scholar-citations"` and is refreshed by a GitHub Actions workflow on the first day of every month.
+
+You can also run the updater manually:
+
+```bash
+python3 scripts/update-scholar-citations.py
+```
+
+The workflow commits only when the Google Scholar citation count changes.
 
 ## Profile Links
 
