@@ -60,13 +60,16 @@ def draw_wrapped(c: canvas.Canvas, text: str, x: float, y: float, width: float, 
         c.drawString(x, y - offset * leading, line)
 
 
-def draw_metric(c: canvas.Canvas, x: float, y: float, value: str, suffix: str, label: str, label_x: float, label_width: float) -> None:
+def draw_metric(c: canvas.Canvas, x: float, y: float, value: str, suffix: str, label: str, label_width: float) -> None:
     c.setFillColor(ACCENT)
     c.setFont("Times-Roman", 17.4)
     c.drawString(x, y, value)
+    label_x = x + c.stringWidth(value, "Times-Roman", 17.4) + 6.0
     if suffix:
         c.setFont("Times-Roman", 10.4)
-        c.drawString(x + c.stringWidth(value, "Times-Roman", 17.4) + 2.0, y + 1.0, suffix)
+        suffix_x = x + c.stringWidth(value, "Times-Roman", 17.4) + 2.0
+        c.drawString(suffix_x, y + 1.0, suffix)
+        label_x = suffix_x + c.stringWidth(suffix, "Times-Roman", 10.4) + 6.0
     draw_wrapped(c, label, label_x, y - 1.0, label_width, 9.8, 11.2)
 
 
@@ -78,10 +81,10 @@ def page_one_overlay(metrics: dict[str, str]) -> PdfReader:
     c.rect(28, 705, 542, 66, stroke=0, fill=1)
     c.rect(82, 407, 470, 30, stroke=0, fill=1)
 
-    draw_metric(c, 36, 750, "10", "yrs", "translation, language teaching, and research track since 2016", 80, 76)
-    draw_metric(c, 180, 750, metrics["orcid-works"], "works", "ORCID-listed publications, chapters, proceedings, and theses", 244, 88)
-    draw_metric(c, 320, 750, metrics["researchgate-reads"], "", "ResearchGate reads across public research profile", 386, 92)
-    draw_metric(c, 470, 750, metrics["google-scholar-citations"], "", "Google Scholar citations", 512, 70)
+    draw_metric(c, 36, 750, "10", "yrs", "translation, language teaching, and research track since 2016", 82)
+    draw_metric(c, 180, 750, metrics["orcid-works"], "works", "ORCID-listed publications, chapters, proceedings, and theses", 100)
+    draw_metric(c, 320, 750, metrics["researchgate-reads"], "", "ResearchGate reads across public research profile", 94)
+    draw_metric(c, 470, 750, metrics["google-scholar-citations"], "", "Google Scholar citations", 72)
 
     c.setFont("Times-Roman", 9.6)
     c.setFillColor(INK)
