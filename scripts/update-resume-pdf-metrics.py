@@ -59,14 +59,14 @@ def draw_wrapped(c: canvas.Canvas, text: str, x: float, y: float, width: float, 
         c.drawString(x, y - offset * leading, line)
 
 
-def draw_metric(c: canvas.Canvas, x: float, y: float, value: str, suffix: str, label: str, label_width: float) -> None:
+def draw_metric(c: canvas.Canvas, x: float, y: float, value: str, suffix: str, label: str, label_width: float, label_size: float = 9.8) -> None:
     c.setFillColor(ACCENT)
     c.setFont("Times-Roman", 17.4)
     c.drawString(x, y, value)
     if suffix:
         c.setFont("Times-Roman", 10.4)
         c.drawString(x + c.stringWidth(value, "Times-Roman", 17.4) + 2.0, y + 1.0, suffix)
-    draw_wrapped(c, label, x, y - 13.0, label_width, 9.3, 10.4)
+    draw_wrapped(c, label, x, y - 13.0, label_width, label_size, 11.0)
 
 
 def page_one_overlay(metrics: dict[str, str]) -> PdfReader:
@@ -77,11 +77,10 @@ def page_one_overlay(metrics: dict[str, str]) -> PdfReader:
     c.rect(28, 705, 542, 66, stroke=0, fill=1)
     c.rect(82, 407, 470, 30, stroke=0, fill=1)
 
-    draw_metric(c, 36, 750, "10", "yrs", "translation track since 2016", 75)
-    draw_metric(c, 150, 750, metrics["orcid-works"], "works", "ORCID-listed works", 80)
-    draw_metric(c, 270, 750, metrics["researchgate-reads"], "", "ResearchGate reads", 82)
-    draw_metric(c, 390, 750, metrics["researchgate-citations"], "", "ResearchGate citations", 70)
-    draw_metric(c, 486, 750, metrics["google-scholar-citations"], "", "Google Scholar citations", 68)
+    draw_metric(c, 36, 756, "10", "yrs", "translation, language teaching, and research track since 2016", 76, 9.2)
+    draw_metric(c, 180, 756, metrics["orcid-works"], "works", "ORCID-listed publications, chapters, proceedings, and theses", 86)
+    draw_metric(c, 320, 756, metrics["researchgate-reads"], "", "ResearchGate reads across public research profile", 92)
+    draw_metric(c, 470, 756, metrics["google-scholar-citations"], "", "Google Scholar citations", 76)
 
     c.setFont("Times-Roman", 9.6)
     c.setFillColor(INK)
