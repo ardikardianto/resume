@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ardik Ardianto · Lecturer, Translator, Researcher</title>
+  <meta name="description" content="Personal homepage for Ardik Ardianto, a lecturer, translator, and researcher in English language, linguistics, discourse, and translation studies.">
+  <meta property="og:title" content="Ardik Ardianto · Lecturer, Translator, Researcher">
+  <meta property="og:description" content="Lecturer in English Language and Literature at Universitas Terbuka, with work across translation studies, discourse analysis, and applied linguistics.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="assets/resume-preview.png">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23f5f4ed'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-family='Georgia,serif' font-size='24' fill='%23141413'%3EAA%3C/text%3E%3C/svg%3E">
+  <style>
+    :root {
+      --paper: #f5f4ed;
+      --paper-quiet: #faf9f5;
+      --ink: #141413;
+      --muted: #6b6a64;
+      --soft: #504e49;
+      --rule: #dedbd0;
+      --rule-soft: #e8e6dc;
+      --accent: #1b365d;
+      --accent-soft: #eef2f7;
+      --serif: Charter, Georgia, Palatino, "Times New Roman", serif;
+      --ui: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color-scheme: light;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(90deg, transparent 0, transparent calc(100% - 1px), #ece9de calc(100% - 1px)),
+        var(--paper);
+      background-size: min(100%, 1120px) 100%, auto;
+      background-position: center top;
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 16px;
+      line-height: 1.55;
+      letter-spacing: 0;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: var(--accent);
+    }
+
+    .page {
+      width: min(100% - 48px, 980px);
+      margin: 0 auto;
+      padding: 46px 0 72px;
+    }
+
+    .site-header,
+    .site-footer,
+    .section-head,
+    .list-row,
+    .identity-grid,
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 164px minmax(0, 1fr);
+      gap: 32px;
+    }
+
+    .site-header {
+      align-items: center;
+      padding-bottom: 82px;
+      font-family: var(--ui);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .brand {
+      color: var(--ink);
+      font-family: var(--serif);
+      font-size: 18px;
+      font-weight: 500;
+    }
+
+    .nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 9px;
+    }
+
+    .nav a::after {
+      content: "/";
+      color: var(--rule);
+      margin-left: 9px;
+    }
+
+    .nav a:last-child::after {
+      content: "";
+      margin: 0;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 220px minmax(0, 1fr);
+      gap: 48px;
+      align-items: center;
+      max-width: 940px;
+      padding-bottom: 84px;
+    }
+
+    .profile-photo {
+      width: 220px;
+      aspect-ratio: 1;
+      margin: 0;
+      border-radius: 50%;
+      border: 1px solid var(--rule);
+      background: var(--paper-quiet);
+      overflow: hidden;
+      box-shadow: 0 18px 42px rgba(20, 20, 19, 0.08);
+    }
+
+    .profile-photo img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 50% 18%;
+    }
+
+    .hero h1 {
+      max-width: 680px;
+      margin: 0 0 20px;
+      font-size: clamp(36px, 5vw, 56px);
+      line-height: 1.08;
+      font-weight: 500;
+      letter-spacing: 0;
+      overflow-wrap: break-word;
+    }
+
+    .hero p {
+      max-width: 650px;
+      margin: 0 0 22px;
+      color: var(--soft);
+      font-size: clamp(18px, 1.9vw, 22px);
+      line-height: 1.45;
+      overflow-wrap: break-word;
+    }
+
+    .hero .status {
+      color: var(--muted);
+      font-family: var(--ui);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .hero a,
+    .list-row a,
+    .footer-links a {
+      border-bottom: 1px solid currentColor;
+      padding-bottom: 1px;
+    }
+
+    main > section {
+      padding: 52px 0;
+      border-top: 1px solid var(--rule);
+    }
+
+    .section-head {
+      align-items: baseline;
+      margin-bottom: 22px;
+    }
+
+    .section-kicker {
+      color: var(--muted);
+      font-family: var(--ui);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 28px;
+      font-weight: 500;
+      line-height: 1.2;
+    }
+
+    .metric-grid {
+      row-gap: 26px;
+    }
+
+    .metric {
+      display: grid;
+      grid-template-columns: 112px minmax(0, 1fr);
+      gap: 20px;
+      align-items: baseline;
+      padding: 0 0 24px;
+      border-bottom: 1px solid var(--rule-soft);
+    }
+
+    .metric b {
+      font-size: 34px;
+      font-weight: 500;
+      line-height: 1;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+
+    .metric span {
+      color: var(--soft);
+    }
+
+    .list {
+      border-top: 1px solid var(--rule-soft);
+    }
+
+    .list-row {
+      padding: 22px 0;
+      border-bottom: 1px solid var(--rule-soft);
+    }
+
+    .year,
+    .meta {
+      color: var(--muted);
+      font-family: var(--ui);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .item-title {
+      margin: 0 0 7px;
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .item-text {
+      max-width: 670px;
+      margin: 0;
+      color: var(--soft);
+    }
+
+    .identity-grid {
+      align-items: start;
+    }
+
+    .identity-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 238px;
+      gap: 42px;
+      align-items: start;
+    }
+
+    .identity-card p {
+      margin: 0 0 18px;
+      color: var(--soft);
+      font-size: 20px;
+      line-height: 1.48;
+    }
+
+    .identity-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 11px;
+      margin-top: 28px;
+      font-family: var(--ui);
+      font-size: 13px;
+    }
+
+    .identity-links a {
+      padding: 7px 11px;
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      color: var(--accent);
+      background: var(--paper-quiet);
+    }
+
+    .resume-visual {
+      margin: 0;
+    }
+
+    .resume-visual img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      background: var(--paper-quiet);
+      box-shadow: 0 18px 50px rgba(20, 20, 19, 0.07);
+    }
+
+    .resume-visual figcaption {
+      margin-top: 10px;
+      color: var(--muted);
+      font-family: var(--ui);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .site-footer {
+      padding-top: 48px;
+      border-top: 1px solid var(--rule);
+      color: var(--muted);
+      font-family: var(--ui);
+      font-size: 13px;
+    }
+
+    .footer-note {
+      max-width: 560px;
+    }
+
+    .footer-links {
+      margin-top: 12px;
+      color: var(--ink);
+    }
+
+    .footer-links a + a::before {
+      content: "/";
+      color: var(--rule);
+      margin: 0 9px;
+    }
+
+    @media (max-width: 760px) {
+      body {
+        background-size: 100% 100%, auto;
+      }
+
+      .page {
+        width: min(100% - 32px, 980px);
+        padding-top: 28px;
+      }
+
+      .site-header,
+      .site-footer,
+      .section-head,
+      .list-row,
+      .identity-grid,
+      .metric-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+
+      .site-header {
+        padding-bottom: 58px;
+      }
+
+      .nav {
+        justify-content: flex-start;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        gap: 28px;
+        padding-bottom: 58px;
+      }
+
+      .profile-photo {
+        width: 168px;
+      }
+
+      main > section {
+        padding: 40px 0;
+      }
+
+      .metric {
+        grid-template-columns: 92px minmax(0, 1fr);
+      }
+
+      .identity-card {
+        grid-template-columns: 1fr;
+      }
+
+      .resume-visual {
+        max-width: 260px;
+      }
+    }
+
+    @media (max-width: 460px) {
+      .page {
+        width: min(100% - 24px, 980px);
+      }
+
+      .hero h1 {
+        font-size: 34px;
+        line-height: 1.08;
+      }
+
+      .hero p,
+      .identity-card p {
+        font-size: 17px;
+      }
+
+      .metric {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="site-header">
+      <a class="brand" href="#">Ardik Ardianto</a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="#work">Work</a>
+        <a href="#research">Research</a>
+        <a href="#profile">Profile</a>
+        <a href="Ardianto's Resume.pdf">Resume</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="intro-title">
+        <figure class="profile-photo">
+          <img src="assets/Profile.png" alt="Portrait of Ardik Ardianto">
+        </figure>
+        <div>
+          <h1 id="intro-title">Hey, I’m Ardik Ardianto. I’m a lecturer, translator &amp; researcher based in Indonesia.</h1>
+          <p>Right now, I teach English Language and Literature at Universitas Terbuka, build translation practice through TranSaintika, and write on language in use across translation, discourse, and applied linguistics.</p>
+          <div class="status">
+            ORCID <a href="https://orcid.org/0000-0001-8642-5840">0000-0001-8642-5840</a> ·
+            <a href="https://www.researchgate.net/profile/Ardik-Ardianto">ResearchGate</a> ·
+            <a href="http://www.linkedin.com/in/ardikardianto">LinkedIn</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="work" aria-labelledby="work-title">
+        <div class="section-head">
+          <div class="section-kicker">01 / Work</div>
+          <h2 id="work-title">Academic teaching, translation practice, and editorial judgment.</h2>
+        </div>
+        <div class="list">
+          <article class="list-row">
+            <div class="year">2022 - Present</div>
+            <div>
+              <h3 class="item-title">Lecturer · Universitas Terbuka</h3>
+              <p class="item-text">Teaching and research in English language and literature, with classroom work connected to publishable inquiry in sociolinguistics, discourse analysis, translation, and English for Specific Purposes.</p>
+            </div>
+          </article>
+          <article class="list-row">
+            <div class="year">Founder</div>
+            <div>
+              <h3 class="item-title">TranSaintika · Language Services</h3>
+              <p class="item-text">A Malang-based practice built around academically grounded translation judgment: terminology control, genre sensitivity, discourse-level equivalence, and context-aware Indonesian-English transfer.</p>
+            </div>
+          </article>
+          <article class="list-row">
+            <div class="year">2016 - 2022</div>
+            <div>
+              <h3 class="item-title">Academic and Legal Translator · UMM Language Center &amp; Palawa Karya</h3>
+              <p class="item-text">High-stakes academic and legal translation shaped the professional base later carried into translation studies research, graduate linguistics training, and scholarly editing.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section aria-labelledby="numbers-title">
+        <div class="section-head">
+          <div class="section-kicker">02 / In Numbers</div>
+          <h2 id="numbers-title">A public scholarly record with a practical translation track.</h2>
+        </div>
+        <div class="metric-grid">
+          <div></div>
+          <div>
+            <div class="metric">
+              <b>10yrs</b>
+              <span>translation, language teaching, and research track since 2016</span>
+            </div>
+            <div class="metric">
+              <b>19</b>
+              <span>ORCID-listed publications, chapters, proceedings, and theses</span>
+            </div>
+            <div class="metric">
+              <b>9,984</b>
+              <span>ResearchGate reads across the public research profile</span>
+            </div>
+            <div class="metric">
+              <b>35</b>
+              <span>ResearchGate citations at source-check time</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="research" aria-labelledby="research-title">
+        <div class="section-head">
+          <div class="section-kicker">03 / Research</div>
+          <h2 id="research-title">Selected work across translation style, contextual configuration, sociolinguistics, and discourse.</h2>
+        </div>
+        <div class="list">
+          <article class="list-row">
+            <div class="year">2025</div>
+            <div>
+              <h3 class="item-title"><a href="https://doi.org/10.21107/prosodi.v19i2.31671">American English use in Indonesian hotel contexts</a></h3>
+              <p class="item-text">A sociolinguistic observation of English as it appears in hospitality settings, reading usage as practical language behavior rather than abstract correctness.</p>
+            </div>
+          </article>
+          <article class="list-row">
+            <div class="year">2025</div>
+            <div>
+              <h3 class="item-title"><a href="https://doi.org/10.32996/ijtis.2025.5.3.1">Interjections and translation strategies in <span lang="en">The Midnight Library</span></a></h3>
+              <p class="item-text">A translation studies piece focused on types, functions, and transfer choices in literary dialogue and emotional texture.</p>
+            </div>
+          </article>
+          <article class="list-row">
+            <div class="year">2024</div>
+            <div>
+              <h3 class="item-title"><a href="https://doi.org/10.5430/wjel.v14n2p56">Contextual configuration of formal and informal introductions</a></h3>
+              <p class="item-text">Work in Systemic Functional Linguistics that treats introductions as patterned social action shaped by field, tenor, and mode.</p>
+            </div>
+          </article>
+          <article class="list-row">
+            <div class="year">2024</div>
+            <div>
+              <h3 class="item-title"><a href="https://doi.org/10.53696/27753719.41127">Code-switching and slang among Gen Z speakers</a></h3>
+              <p class="item-text">A study of everyday language dynamics, social identity, and the expressive pressure inside contemporary communication.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="profile" aria-labelledby="profile-title">
+        <div class="section-head">
+          <div class="section-kicker">04 / Profile</div>
+          <h2 id="profile-title">A linguist’s profile, built from teaching rooms and translation desks.</h2>
+        </div>
+        <div class="identity-grid">
+          <div class="meta">Research identity</div>
+          <div class="identity-card">
+            <div>
+              <p>My core work sits where texts meet institutions: how meaning travels across language, genre, ideology, classroom practice, and publication standards.</p>
+              <p>Current interests include translation strategies, discourse analysis, ESP materials, sociolinguistic observation, machine translation correspondence, and student-facing research collaboration.</p>
+              <div class="identity-links">
+                <a href="https://orcid.org/0000-0001-8642-5840">ORCID</a>
+                <a href="http://www.scopus.com/inward/authorDetails.url?authorID=58844250600&partnerID=MN8TOARS">Scopus</a>
+                <a href="https://scholar.google.com/citations?user=LATwILMAAAAJ&hl=id&oi=ao">Google Scholar</a>
+                <a href="Ardianto's Resume.pdf">Download resume</a>
+              </div>
+            </div>
+            <figure class="resume-visual">
+              <img src="assets/resume-preview.png" alt="Preview of Ardik Ardianto's two-page resume">
+              <figcaption>Resume source used for this homepage.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div>2026 - Ardik Ardianto</div>
+      <div class="footer-note">
+        Lecturer · Translator · Researcher in English language, translation studies, discourse, and applied linguistics.
+        <div class="footer-links">
+          <a href="#work">Work</a><a href="#research">Research</a><a href="http://www.linkedin.com/in/ardikardianto">Contact</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
