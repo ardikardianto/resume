@@ -60,7 +60,7 @@ The updater covers:
 
 - ORCID listed works from the ORCID public API.
 - Google Scholar citations from the public Google Scholar profile.
-- ResearchGate reads and citations on a best-effort basis from the public ResearchGate profile.
+- ResearchGate reads and citations on a best-effort basis from the public ResearchGate stats/profile pages.
 
 You can also run the updater manually:
 
@@ -75,7 +75,7 @@ The same workflow also overlays the current metrics onto `Ardianto's Resume.pdf`
 ## Profile Links
 
 - ORCID: https://orcid.org/0000-0001-8642-5840
-- ResearchGate: https://www.researchgate.net/profile/Ardik-Ardianto
+- ResearchGate: https://www.researchgate.net/profile/Ardik-Ardianto/stats
 - LinkedIn: http://www.linkedin.com/in/ardikardianto
 - Scopus: http://www.scopus.com/inward/authorDetails.url?authorID=58844250600&partnerID=MN8TOARS
 - Google Scholar: https://scholar.google.com/citations?user=LATwILMAAAAJ

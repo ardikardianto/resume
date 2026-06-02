@@ -20,7 +20,8 @@ from pathlib import Path
 
 
 ORCID_WORKS_URL = "https://pub.orcid.org/v3.0/0000-0001-8642-5840/works"
-RESEARCHGATE_URL = "https://www.researchgate.net/profile/Ardik-Ardianto"
+RESEARCHGATE_STATS_URL = "https://www.researchgate.net/profile/Ardik-Ardianto/stats"
+RESEARCHGATE_PROFILE_URL = "https://www.researchgate.net/profile/Ardik-Ardianto"
 SCHOLAR_URL = "https://scholar.google.com/citations?user=LATwILMAAAAJ&hl=en"
 INDEX_PATH = Path(__file__).resolve().parents[1] / "index.html"
 
@@ -85,13 +86,16 @@ def extract_first(patterns: list[str], text: str) -> int | None:
 
 
 def extract_researchgate_metrics() -> tuple[int | None, int | None]:
-    try:
-        page = fetch_text(RESEARCHGATE_URL)
-    except urllib.error.HTTPError as exc:
-        print(f"ResearchGate skipped: HTTP {exc.code}", file=sys.stderr)
-        return None, None
-    except urllib.error.URLError as exc:
-        print(f"ResearchGate skipped: {exc.reason}", file=sys.stderr)
+    page = None
+    for url in (RESEARCHGATE_STATS_URL, RESEARCHGATE_PROFILE_URL):
+        try:
+            page = fetch_text(url)
+            break
+        except urllib.error.HTTPError as exc:
+            print(f"ResearchGate skipped {url}: HTTP {exc.code}", file=sys.stderr)
+        except urllib.error.URLError as exc:
+            print(f"ResearchGate skipped {url}: {exc.reason}", file=sys.stderr)
+    if page is None:
         return None, None
 
     text = html.unescape(page)
