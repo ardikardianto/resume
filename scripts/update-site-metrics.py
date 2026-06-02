@@ -116,6 +116,22 @@ def extract_researchgate_metrics() -> tuple[int | None, int | None]:
     return reads, citations
 
 
+def current_metric(key: str) -> int:
+    page = INDEX_PATH.read_text(encoding="utf-8")
+    match = re.search(rf'<b data-metric="{re.escape(key)}">([\d,]+)</b>', page)
+    if not match:
+        raise ValueError(f"Could not find existing metric {key!r} in index.html.")
+    return int(match.group(1).replace(",", ""))
+
+
+def preserve_on_error(key: str, extractor) -> int:
+    try:
+        return extractor()
+    except Exception as exc:
+        print(f"{key} preserved: {exc}", file=sys.stderr)
+        return current_metric(key)
+
+
 def update_metric(page: str, key: str, value: int | None) -> tuple[str, bool]:
     if value is None:
         return page, False
@@ -146,10 +162,13 @@ def update_index(metrics: dict[str, int | None]) -> bool:
 def main() -> int:
     researchgate_reads, researchgate_citations = extract_researchgate_metrics()
     metrics = {
-        "orcid-works": extract_orcid_works(),
+        "orcid-works": preserve_on_error("orcid-works", extract_orcid_works),
         "researchgate-reads": researchgate_reads,
         "researchgate-citations": researchgate_citations,
-        "google-scholar-citations": extract_scholar_citations(),
+        "google-scholar-citations": preserve_on_error(
+            "google-scholar-citations",
+            extract_scholar_citations,
+        ),
     }
     changed = update_index(metrics)
 
