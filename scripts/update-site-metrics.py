@@ -120,12 +120,19 @@ def extract_researchgate_metrics() -> tuple[int | None, int | None]:
     return reads, citations
 
 
+def format_metric(value: int) -> str:
+    if abs(value) >= 1_000:
+        compact = f"{value / 1_000:.1f}".rstrip("0").rstrip(".")
+        return f"{compact}k"
+    return f"{value:,}"
+
+
 def current_metric(key: str) -> int:
     page = INDEX_PATH.read_text(encoding="utf-8")
-    match = re.search(rf'<b data-metric="{re.escape(key)}">([\d,]+)</b>', page)
+    match = re.search(rf'<b data-metric="{re.escape(key)}">([\d,.]+[km]?)</b>', page)
     if not match:
         raise ValueError(f"Could not find existing metric {key!r} in index.html.")
-    return int(match.group(1).replace(",", ""))
+    return parse_compact_number(match.group(1))
 
 
 def preserve_on_error(key: str, extractor) -> int:
@@ -141,8 +148,8 @@ def update_metric(page: str, key: str, value: int | None) -> tuple[str, bool]:
         return page, False
 
     next_page, replacements = re.subn(
-        rf'(<b data-metric="{re.escape(key)}">)([\d,]+)(</b>)',
-        lambda match: f"{match.group(1)}{value:,}{match.group(3)}",
+        rf'(<b data-metric="{re.escape(key)}">)([\d,.]+[km]?)(</b>)',
+        lambda match: f"{match.group(1)}{format_metric(value)}{match.group(3)}",
         page,
         count=1,
     )
@@ -177,7 +184,7 @@ def main() -> int:
     changed = update_index(metrics)
 
     for key, value in metrics.items():
-        shown = f"{value:,}" if value is not None else "preserved"
+        shown = format_metric(value) if value is not None else "preserved"
         print(f"{key}: {shown}")
     print("index.html updated" if changed else "index.html already current")
     return 0

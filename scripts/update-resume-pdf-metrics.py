@@ -34,7 +34,7 @@ SOFT_BLUE = "#eef2f7"
 
 def metric(key: str) -> str:
     html = INDEX_PATH.read_text(encoding="utf-8")
-    match = re.search(rf'<b data-metric="{re.escape(key)}">([\d,]+)</b>', html)
+    match = re.search(rf'<b data-metric="{re.escape(key)}">([\d,.]+[km]?)</b>', html)
     if not match:
         raise ValueError(f"Metric {key!r} not found in index.html")
     return match.group(1)
@@ -61,6 +61,9 @@ def draw_wrapped(c: canvas.Canvas, text: str, x: float, y: float, width: float, 
 
 
 def draw_metric(c: canvas.Canvas, x: float, y: float, value: str, suffix: str, label: str, label_width: float) -> None:
+    if not suffix and value.lower().endswith(("k", "m")):
+        value, suffix = value[:-1], value[-1]
+
     c.setFillColor(ACCENT)
     c.setFont("Times-Roman", 17.4)
     c.drawString(x, y, value)
