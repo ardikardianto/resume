@@ -320,6 +320,62 @@
       line-height: 1.4;
     }
 
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 30px;
+      margin-top: 4px;
+    }
+
+    .project-card {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .project-thumb {
+      display: block;
+    }
+
+    .project-thumb img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--rule);
+      border-radius: 7px;
+      background: var(--paper-quiet);
+      box-shadow: 0 14px 36px rgba(20, 20, 19, 0.08);
+      transition: box-shadow 0.25s ease, transform 0.25s ease;
+    }
+
+    .project-card:hover .project-thumb img {
+      box-shadow: 0 20px 46px rgba(20, 20, 19, 0.13);
+      transform: translateY(-2px);
+    }
+
+    .project-title {
+      margin: 17px 0 6px;
+      font-size: 19px;
+      font-weight: 500;
+      line-height: 1.28;
+    }
+
+    .project-title a {
+      border-bottom: 1px solid transparent;
+      padding-bottom: 1px;
+    }
+
+    .project-title a:hover {
+      color: var(--accent);
+      border-bottom-color: currentColor;
+    }
+
+    .project-text {
+      margin: 0;
+      color: var(--soft);
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
     .site-footer {
       padding-top: 48px;
       border-top: 1px solid var(--rule);
@@ -396,6 +452,12 @@
       .resume-visual {
         max-width: 260px;
       }
+
+      .projects-grid {
+        grid-template-columns: 1fr;
+        gap: 26px;
+        max-width: 360px;
+      }
     }
 
     @media (max-width: 460px) {
@@ -426,6 +488,7 @@
     <nav class="nav" aria-label="Primary navigation">
       <a href="#work">Work</a>
       <a href="#research">Research</a>
+      <a href="#projects">Projects</a>
       <a href="#profile">Profile</a>
       <a href="Ardianto's Resume.pdf">Resume</a>
     </nav>
@@ -546,9 +609,39 @@
         </div>
       </section>
 
+      <section id="projects" aria-labelledby="projects-title">
+        <div class="section-head">
+          <div class="section-kicker">04 / Projects</div>
+          <h2 id="projects-title">Department web tools I designed and built for teaching, research, and translation.</h2>
+        </div>
+        <div class="projects-grid">
+          <article class="project-card">
+            <a class="project-thumb" href="https://dept-dashboard.vercel.app" target="_blank" rel="noopener">
+              <img src="assets/project-dept-dashboard.jpg" alt="Screenshot of the Department Dashboard homepage" width="1200" height="750" loading="lazy">
+            </a>
+            <h3 class="project-title"><a href="https://dept-dashboard.vercel.app" target="_blank" rel="noopener">Department Dashboard</a></h3>
+            <p class="project-text">A single portal where tutors view their profile by ID and administrators manage lecturers, courses, and term plotting.</p>
+          </article>
+          <article class="project-card">
+            <a class="project-thumb" href="https://dept-publications.vercel.app" target="_blank" rel="noopener">
+              <img src="assets/project-dept-publications.jpg" alt="Screenshot of the Department Publications homepage" width="1200" height="750" loading="lazy">
+            </a>
+            <h3 class="project-title"><a href="https://dept-publications.vercel.app" target="_blank" rel="noopener">Department Publications</a></h3>
+            <p class="project-text">A focused dashboard tracking journal publications, authors, indexes, and research fields across the English Department.</p>
+          </article>
+          <article class="project-card">
+            <a class="project-thumb" href="https://translation-laboratory.vercel.app" target="_blank" rel="noopener">
+              <img src="assets/project-translation-laboratory.jpg" alt="Screenshot of the Digital Translation Laboratory homepage" width="1200" height="750" loading="lazy">
+            </a>
+            <h3 class="project-title"><a href="https://translation-laboratory.vercel.app" target="_blank" rel="noopener">Digital Translation Laboratory</a></h3>
+            <p class="project-text">A guided in-browser workspace for students to practice, review, and manage translation projects segment by segment.</p>
+          </article>
+        </div>
+      </section>
+
       <section id="profile" aria-labelledby="profile-title">
         <div class="section-head">
-          <div class="section-kicker">04 / Profile</div>
+          <div class="section-kicker">05 / Profile</div>
           <h2 id="profile-title">A linguist’s profile, built from teaching rooms and translation desks.</h2>
         </div>
         <div class="identity-grid">
