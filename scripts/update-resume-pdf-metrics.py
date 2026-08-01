@@ -21,6 +21,7 @@ ROOT = Path(__file__).resolve().parents[1]
 INDEX_PATH = ROOT / "index.html"
 PDF_PATH = ROOT / "Ardianto's Resume.pdf"
 BASE_PDF_PATH = ROOT / "assets" / "source" / "resume-base.pdf"
+RESEARCHGATE_PUBLICATIONS = "17"
 
 PAGE_WIDTH = 594.95996
 PAGE_HEIGHT = 841.91998
@@ -91,7 +92,7 @@ def page_one_overlay(metrics: dict[str, str]) -> PdfReader:
 
     c.setFont("Times-Roman", 9.6)
     c.setFillColor(INK)
-    c.drawString(83, 425, f"Public research profile lists 16 ResearchGate publications, {metrics['researchgate-reads']} reads,")
+    c.drawString(83, 425, f"Public research profile lists {RESEARCHGATE_PUBLICATIONS} ResearchGate publications, {metrics['researchgate-reads']} reads,")
     c.drawString(83, 412, f"{metrics['researchgate-citations']} ResearchGate citations, and {metrics['google-scholar-citations']} Google Scholar citations.")
 
     c.save()
@@ -115,7 +116,7 @@ def page_two_overlay(metrics: dict[str, str]) -> PdfReader:
     c.drawString(
         36,
         756,
-        f"{metrics['orcid-works']} ORCID works · 16 ResearchGate publications · "
+        f"{metrics['orcid-works']} ORCID works · {RESEARCHGATE_PUBLICATIONS} ResearchGate publications · "
         f"{metrics['researchgate-citations']} ResearchGate citations · "
         f"{metrics['google-scholar-citations']} Google Scholar citations.",
     )
@@ -140,7 +141,7 @@ def main() -> int:
         page.merge_page(overlays[index].pages[0])
         writer.add_page(page)
 
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf", dir=ROOT) as tmp:
         writer.write(tmp)
         temp_path = Path(tmp.name)
 
