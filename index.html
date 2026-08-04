@@ -737,5 +737,28 @@
       </div>
     </footer>
   </div>
+  <script>
+    const folderMenu = document.querySelector(".folder-menu");
+
+    if (folderMenu) {
+      document.addEventListener("click", (event) => {
+        if (!folderMenu.contains(event.target)) {
+          folderMenu.removeAttribute("open");
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          folderMenu.removeAttribute("open");
+        }
+      });
+
+      folderMenu.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", () => {
+          folderMenu.removeAttribute("open");
+        });
+      });
+    }
+  </script>
 </body>
 </html>
