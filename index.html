@@ -110,15 +110,61 @@
       gap: 9px;
     }
 
-    .nav a::after {
+    .nav > a::after,
+    .folder-menu summary::after {
       content: "/";
       color: var(--rule);
       margin-left: 9px;
     }
 
-    .nav a:last-child::after {
+    .nav > a:last-child::after {
       content: "";
       margin: 0;
+    }
+
+    .folder-menu {
+      position: relative;
+    }
+
+    .folder-menu summary {
+      cursor: pointer;
+      list-style: none;
+    }
+
+    .folder-menu summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .folder-panel {
+      position: absolute;
+      top: calc(100% + 12px);
+      right: 0;
+      display: grid;
+      min-width: 190px;
+      padding: 8px;
+      border: 1px solid rgba(222, 219, 208, 0.92);
+      border-radius: 6px;
+      background: rgba(245, 244, 237, 0.98);
+      box-shadow: 0 18px 40px rgba(20, 20, 19, 0.12);
+      z-index: 30;
+    }
+
+    .folder-panel a {
+      padding: 8px 10px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    .folder-panel a:hover {
+      background: var(--soft-blue);
+    }
+
+    .folder-heading {
+      padding: 10px 10px 4px;
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: 0;
+      text-transform: uppercase;
     }
 
     .hero {
@@ -427,6 +473,11 @@
         justify-content: flex-start;
       }
 
+      .folder-panel {
+        left: 0;
+        right: auto;
+      }
+
       .hero {
         grid-template-columns: 1fr;
         gap: 28px;
@@ -490,7 +541,16 @@
       <a href="#research">Research</a>
       <a href="#projects">Projects</a>
       <a href="#profile">Profile</a>
-      <a href="https://linktr.ee/ardikardianto">Folder</a>
+      <details class="folder-menu">
+        <summary>Folder</summary>
+        <div class="folder-panel">
+          <a href="https://studentutac-my.sharepoint.com/:f:/g/personal/ardik_ecampus_ut_ac_id/EvcA6e_3dABNhxpf61YwtC0BLqxLuv1jO_I_8MiQIul3Yw?e=AqHfco">Published Papers</a>
+          <a href="https://studentutac-my.sharepoint.com/:f:/g/personal/ardik_ecampus_ut_ac_id/EjPCjqwdzSNOrzgM3xZSnS8Bibv1_r-YueJQ5Ya2z0mtsA?e=YBVTPt">Digital Books</a>
+          <span class="folder-heading">Scientific Writing</span>
+          <a href="https://studentutac-my.sharepoint.com/:f:/g/personal/ardik_ecampus_ut_ac_id/IgDhxtc5xZ8wT5n-Hw_UADzBARyyWDrbx3OiMJcuJ-TM-2E?e=ALRV15">Group Folder</a>
+          <a href="https://studentutac-my.sharepoint.com/:f:/g/personal/ardik_ecampus_ut_ac_id/Et-t_l_xbr1Oqs1olkHHHaMBSB4sjFYiIcqA-4W4oEwlHQ?e=1FGpYK">Recordings</a>
+        </div>
+      </details>
       <a href="Ardianto's Resume.pdf">Resume</a>
     </nav>
   </header>
