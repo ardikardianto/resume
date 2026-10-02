@@ -121,9 +121,6 @@ def extract_researchgate_metrics() -> tuple[int | None, int | None]:
 
 
 def format_metric(value: int) -> str:
-    if abs(value) >= 1_000:
-        compact = f"{value / 1_000:.1f}".rstrip("0").rstrip(".")
-        return f"{compact}k"
     return f"{value:,}"
 
 
@@ -141,6 +138,13 @@ def preserve_on_error(key: str, extractor) -> int:
     except Exception as exc:
         print(f"{key} preserved: {exc}", file=sys.stderr)
         return current_metric(key)
+
+
+def preserve_cumulative_floor(key: str, value: int | None) -> int | None:
+    """Keep authenticated cumulative totals when public pages lag behind."""
+    if value is None:
+        return None
+    return max(value, current_metric(key))
 
 
 def update_metric(page: str, key: str, value: int | None) -> tuple[str, bool]:
@@ -174,11 +178,15 @@ def main() -> int:
     researchgate_reads, researchgate_citations = extract_researchgate_metrics()
     metrics = {
         "orcid-works": preserve_on_error("orcid-works", extract_orcid_works),
-        "researchgate-reads": researchgate_reads,
-        "researchgate-citations": researchgate_citations,
-        "google-scholar-citations": preserve_on_error(
+        "researchgate-reads": preserve_cumulative_floor(
+            "researchgate-reads", researchgate_reads
+        ),
+        "researchgate-citations": preserve_cumulative_floor(
+            "researchgate-citations", researchgate_citations
+        ),
+        "google-scholar-citations": preserve_cumulative_floor(
             "google-scholar-citations",
-            extract_scholar_citations,
+            preserve_on_error("google-scholar-citations", extract_scholar_citations),
         ),
     }
     changed = update_index(metrics)
