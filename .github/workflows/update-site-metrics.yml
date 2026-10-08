@@ -4,6 +4,15 @@ on:
   schedule:
     - cron: "17 3 1 * *"
   workflow_dispatch:
+    inputs:
+      researchgate_reads:
+        description: "ResearchGate reads (copy from your ResearchGate stats page; leave blank to keep the current value)"
+        required: false
+        type: string
+      researchgate_citations:
+        description: "ResearchGate citations (leave blank to keep the current value)"
+        required: false
+        type: string
 
 permissions:
   contents: write
@@ -21,6 +30,9 @@ jobs:
           python-version: "3.x"
 
       - name: Update public scholarly metrics
+        env:
+          RESEARCHGATE_READS: ${{ inputs.researchgate_reads }}
+          RESEARCHGATE_CITATIONS: ${{ inputs.researchgate_citations }}
         run: python scripts/update-site-metrics.py
 
       - name: Install PDF update dependencies

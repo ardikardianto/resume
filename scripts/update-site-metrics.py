@@ -6,12 +6,18 @@ default Python runtime. ORCID and Google Scholar are fetched directly from
 public pages/APIs. ResearchGate is best-effort because the public profile can
 return Cloudflare 1020 to automated requests; when that happens, the existing
 ResearchGate values in index.html are preserved.
+
+ResearchGate usually blocks GitHub's servers (HTTP 403), so its numbers can be
+supplied by hand: set RESEARCHGATE_READS and RESEARCHGATE_CITATIONS (the
+workflow's "Run workflow" form fills these in). A value given this way is used
+as-is and the ResearchGate pages are not fetched.
 """
 
 from __future__ import annotations
 
 import html
 import json
+import os
 import re
 import sys
 import urllib.error
@@ -83,6 +89,18 @@ def extract_first(patterns: list[str], text: str) -> int | None:
         if match:
             return parse_compact_number(match.group(1))
     return None
+
+
+def manual_metric(env_name: str) -> int | None:
+    raw = os.environ.get(env_name, "").strip()
+    if not raw:
+        return None
+    try:
+        value = parse_compact_number(raw)
+    except ValueError:
+        raise ValueError(f"{env_name} must be a number such as 11364 or 11,364; got {raw!r}.")
+    print(f"{env_name} supplied manually: {format_metric(value)}")
+    return value
 
 
 def extract_researchgate_metrics() -> tuple[int | None, int | None]:
@@ -175,15 +193,21 @@ def update_index(metrics: dict[str, int | None]) -> bool:
 
 
 def main() -> int:
-    researchgate_reads, researchgate_citations = extract_researchgate_metrics()
+    manual_reads = manual_metric("RESEARCHGATE_READS")
+    manual_citations = manual_metric("RESEARCHGATE_CITATIONS")
+    if manual_reads is None or manual_citations is None:
+        fetched_reads, fetched_citations = extract_researchgate_metrics()
+    else:
+        fetched_reads = fetched_citations = None
+
     metrics = {
         "orcid-works": preserve_on_error("orcid-works", extract_orcid_works),
-        "researchgate-reads": preserve_cumulative_floor(
-            "researchgate-reads", researchgate_reads
-        ),
-        "researchgate-citations": preserve_cumulative_floor(
-            "researchgate-citations", researchgate_citations
-        ),
+        "researchgate-reads": manual_reads
+        if manual_reads is not None
+        else preserve_cumulative_floor("researchgate-reads", fetched_reads),
+        "researchgate-citations": manual_citations
+        if manual_citations is not None
+        else preserve_cumulative_floor("researchgate-citations", fetched_citations),
         "google-scholar-citations": preserve_cumulative_floor(
             "google-scholar-citations",
             preserve_on_error("google-scholar-citations", extract_scholar_citations),

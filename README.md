@@ -70,6 +70,12 @@ You can also run the updater manually:
 python3 scripts/update-site-metrics.py
 ```
 
+ResearchGate normally blocks GitHub's servers (HTTP 403). To update its numbers, open **Actions → Update site metrics → Run workflow** and fill in the ResearchGate reads and citations boxes; blank boxes keep the current values. Locally, the same works with environment variables:
+
+```bash
+RESEARCHGATE_READS=11364 RESEARCHGATE_CITATIONS=61 python3 scripts/update-site-metrics.py
+```
+
 The workflow commits only when a metric changes. If ResearchGate blocks automated access, the existing ResearchGate values are preserved and the other metrics still update.
 
 The same workflow also overlays the current metrics onto `Ardianto's Resume.pdf` and regenerates `assets/resume-preview.png`, so the downloadable resume and site preview stay aligned with the homepage.
