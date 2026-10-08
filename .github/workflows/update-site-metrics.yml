@@ -36,4 +36,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "Update public scholarly metrics"
-          file_pattern: index.html "Ardianto's Resume.pdf" assets/resume-preview.png
+          file_pattern: index.html *Resume.pdf assets/resume-preview.png
