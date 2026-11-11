@@ -138,8 +138,10 @@ def main() -> int:
     overlays = [page_one_overlay(metrics), page_two_overlay(metrics)]
     writer = PdfWriter()
     for index, page in enumerate(base.pages):
-        page.merge_page(overlays[index].pages[0])
-        writer.add_page(page)
+        # pypdf 7+ only allows merging onto pages that already belong to a
+        # writer, so add the page first and merge onto the writer's copy.
+        writer_page = writer.add_page(page)
+        writer_page.merge_page(overlays[index].pages[0])
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf", dir=ROOT) as tmp:
         writer.write(tmp)
