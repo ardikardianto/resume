@@ -28,6 +28,11 @@ The page is designed as a minimal portfolio homepage inspired by the Minilio min
 - compact stacked layout on mobile
 - lightweight navigation and section dividers
 - text-first academic portfolio structure
+- told as a story: Prologue, four chapters (Work, Research, Numbers, Projects), Epilogue and a closing call to action
+- scroll animations in plain CSS/JS with no libraries: word-by-word headline, a timeline that draws as you scroll with a sticky year, an interlude quote whose words light up, count-up metrics, image reveals, chapter numerals with parallax, a reading-progress bar and a chapter rail on wide screens
+- all motion is switched off for visitors who set "reduce motion"; the page then renders fully static
+
+Metric values must stay in the exact form `<b data-metric="key">value</b>`; the count-up animation reads them at runtime, so the update scripts keep working.
 
 ## Local Preview
 

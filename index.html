@@ -10,6 +10,12 @@
   <meta property="og:type" content="website">
   <meta property="og:image" content="assets/resume-preview.png">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23f5f4ed'/%3E%3Ctext x='32' y='39' text-anchor='middle' font-family='Georgia,serif' font-size='24' fill='%23141413'%3EAA%3C/text%3E%3C/svg%3E">
+  <script>
+    /* Animations only run when the visitor allows motion; otherwise the page is fully static. */
+    if (window.matchMedia && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.documentElement.classList.add("motion");
+    }
+  </script>
   <style>
     :root {
       --paper: #f5f4ed;
@@ -19,10 +25,13 @@
       --soft: #504e49;
       --rule: #dedbd0;
       --rule-soft: #e8e6dc;
+      --ghost: #d6d3c6;
       --accent: #1b365d;
       --accent-soft: #eef2f7;
       --serif: Charter, Georgia, Palatino, "Times New Roman", serif;
       --ui: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --ease: cubic-bezier(0.22, 1, 0.36, 1);
+      --wrap: 1040px;
       color-scheme: light;
     }
 
@@ -37,11 +46,7 @@
 
     body {
       margin: 0;
-      background:
-        linear-gradient(90deg, transparent 0, transparent calc(100% - 1px), #ece9de calc(100% - 1px)),
-        var(--paper);
-      background-size: min(100%, 1120px) 100%, auto;
-      background-position: center top;
+      background: var(--paper);
       color: var(--ink);
       font-family: var(--serif);
       font-size: 16px;
@@ -61,22 +66,18 @@
       color: var(--accent);
     }
 
-    .page {
-      width: min(100% - 48px, 980px);
-      margin: 0 auto;
-      padding: 138px 0 72px;
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 2px;
     }
 
-    .site-header,
-    .site-footer,
-    .section-head,
-    .list-row,
-    .identity-grid,
-    .metric-grid {
-      display: grid;
-      grid-template-columns: 164px minmax(0, 1fr);
-      gap: 32px;
+    .wrap {
+      width: min(100% - 48px, var(--wrap));
+      margin: 0 auto;
     }
+
+    /* ---------- Header ---------- */
 
     .site-header {
       position: fixed;
@@ -84,11 +85,13 @@
       left: 0;
       right: 0;
       z-index: 20;
-      width: 100%;
+      display: flex;
       align-items: center;
-      padding: 22px max(24px, calc((100vw - 980px) / 2)) 20px;
+      justify-content: space-between;
+      gap: 24px;
+      padding: 20px max(24px, calc((100vw - var(--wrap)) / 2)) 18px;
       border-bottom: 1px solid rgba(222, 219, 208, 0.78);
-      background: rgba(245, 244, 237, 0.88);
+      background: rgba(245, 244, 237, 0.86);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       font-family: var(--ui);
@@ -96,18 +99,37 @@
       color: var(--muted);
     }
 
+    .progress {
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      height: 2px;
+      width: 100%;
+      background: var(--accent);
+      transform-origin: 0 50%;
+      transform: scaleX(0);
+    }
+
     .brand {
       color: var(--ink);
       font-family: var(--serif);
       font-size: 18px;
       font-weight: 500;
+      white-space: nowrap;
     }
 
     .nav {
       display: flex;
       flex-wrap: wrap;
       justify-content: flex-end;
+      align-items: center;
       gap: 9px;
+    }
+
+    .nav > a,
+    .folder-menu summary {
+      position: relative;
+      transition: color 0.3s ease;
     }
 
     .nav > a::after,
@@ -120,6 +142,20 @@
     .nav > a:last-child::after {
       content: "";
       margin: 0;
+    }
+
+    .nav > a.is-current {
+      color: var(--ink);
+    }
+
+    .nav > a.is-current::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 18px;
+      bottom: -5px;
+      height: 1px;
+      background: currentColor;
     }
 
     .folder-menu {
@@ -156,35 +192,261 @@
     }
 
     .folder-panel a:hover {
-      background: var(--soft-blue);
+      background: var(--accent-soft);
     }
 
     .folder-heading {
       padding: 10px 10px 4px;
       color: var(--muted);
       font-size: 11px;
-      letter-spacing: 0;
       text-transform: uppercase;
     }
 
-    .hero {
+    /* ---------- Chapter rail (wide screens) ---------- */
+
+    .rail {
+      position: fixed;
+      right: 26px;
+      top: 50%;
+      z-index: 15;
+      display: none;
+      transform: translateY(-50%);
+      font-family: var(--ui);
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .rail ol {
       display: grid;
-      grid-template-columns: 220px minmax(0, 1fr);
-      gap: 48px;
+      gap: 14px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .rail a {
+      display: flex;
       align-items: center;
-      max-width: 940px;
-      padding-bottom: 84px;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .rail .label {
+      opacity: 0;
+      transform: translateX(6px);
+      transition: opacity 0.3s ease, transform 0.3s var(--ease);
+      white-space: nowrap;
+    }
+
+    .rail .tick {
+      width: 14px;
+      height: 1px;
+      background: var(--ghost);
+      transition: width 0.4s var(--ease), background 0.3s ease;
+    }
+
+    .rail a:hover .label,
+    .rail a.is-current .label {
+      opacity: 1;
+      transform: none;
+    }
+
+    .rail a.is-current {
+      color: var(--ink);
+    }
+
+    .rail a.is-current .tick {
+      width: 30px;
+      background: var(--ink);
+    }
+
+    @media (min-width: 1240px) {
+      .rail {
+        display: block;
+      }
+    }
+
+    /* ---------- Shared chapter styles ---------- */
+
+    .chapter {
+      position: relative;
+      padding: 120px 0;
+      scroll-margin-top: 60px;
+    }
+
+    .chapter + .chapter {
+      border-top: 1px solid var(--rule);
+    }
+
+    .chapter-head {
+      position: relative;
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 40px;
+      align-items: end;
+      margin-bottom: 64px;
+    }
+
+    .numeral {
+      font-size: clamp(88px, 12vw, 150px);
+      line-height: 0.8;
+      font-weight: 400;
+      color: transparent;
+      -webkit-text-stroke: 1px var(--ghost);
+      user-select: none;
+    }
+
+    .kicker {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+      color: var(--muted);
+      font-family: var(--ui);
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .kicker::before {
+      content: "";
+      width: 36px;
+      height: 1px;
+      background: currentColor;
+      transform-origin: 0 50%;
+      transition: transform 1s var(--ease) 0.2s;
+    }
+
+    .motion .kicker::before {
+      transform: scaleX(0);
+    }
+
+    .motion .is-in .kicker::before,
+    .motion .kicker.is-in::before {
+      transform: scaleX(1);
+    }
+
+    h2 {
+      max-width: 700px;
+      margin: 0;
+      font-size: clamp(28px, 3.4vw, 40px);
+      font-weight: 500;
+      line-height: 1.16;
+    }
+
+    .lede {
+      max-width: 620px;
+      margin: 18px 0 0;
+      color: var(--soft);
+      font-size: 19px;
+      line-height: 1.5;
+    }
+
+    .bridge {
+      max-width: 560px;
+      margin: 80px 0 0 280px;
+      color: var(--muted);
+      font-size: 19px;
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    .bridge::before {
+      content: "";
+      display: block;
+      width: 1px;
+      height: 48px;
+      margin-bottom: 18px;
+      background: linear-gradient(var(--rule), var(--muted));
+    }
+
+    .meta {
+      color: var(--muted);
+      font-family: var(--ui);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    /* ---------- Reveal system ---------- */
+
+    .motion [data-reveal] {
+      opacity: 0;
+      transform: translate3d(0, 30px, 0);
+      filter: blur(6px);
+      transition:
+        opacity 1s var(--ease),
+        transform 1.1s var(--ease),
+        filter 1s var(--ease);
+      transition-delay: var(--d, 0ms);
+    }
+
+    .motion [data-reveal="left"] {
+      transform: translate3d(-40px, 0, 0);
+    }
+
+    .motion [data-reveal="right"] {
+      transform: translate3d(40px, 0, 0);
+    }
+
+    .motion [data-reveal="scale"] {
+      transform: scale(0.94);
+    }
+
+    .motion [data-reveal="tilt"] {
+      transform: perspective(900px) rotateY(-18deg) rotateZ(3deg) translate3d(30px, 20px, 0);
+      transform-origin: 100% 50%;
+    }
+
+    .motion [data-reveal].is-in {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+
+    /* ---------- Prologue (hero) ---------- */
+
+    .hero {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-height: 100vh;
+      min-height: 100svh;
+      padding: 120px 0 110px;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 56px;
+      align-items: center;
+      will-change: transform, opacity;
     }
 
     .profile-photo {
-      width: 220px;
+      position: relative;
+      width: 240px;
       aspect-ratio: 1;
       margin: 0;
+    }
+
+    .profile-photo::before {
+      content: "";
+      position: absolute;
+      inset: -14px;
+      border: 1px solid var(--rule);
+      border-radius: 50%;
+    }
+
+    .profile-photo .frame {
+      position: relative;
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
       border: 1px solid var(--rule);
       background: var(--paper-quiet);
       overflow: hidden;
-      box-shadow: 0 18px 42px rgba(20, 20, 19, 0.08);
+      box-shadow: 0 24px 54px rgba(20, 20, 19, 0.1);
     }
 
     .profile-photo img {
@@ -195,22 +457,65 @@
       object-position: 50% 18%;
     }
 
-    .hero h1 {
-      max-width: 680px;
-      margin: 0 0 20px;
-      font-size: clamp(36px, 5vw, 56px);
-      line-height: 1.08;
+    .motion .profile-photo .frame {
+      clip-path: circle(0% at 50% 50%);
+      transition: clip-path 1.4s var(--ease) 0.1s;
+    }
+
+    .motion .profile-photo img {
+      transform: scale(1.18);
+      transition: transform 2s var(--ease) 0.1s;
+    }
+
+    .motion .profile-photo::before {
+      opacity: 0;
+      transform: scale(0.85) rotate(-40deg);
+      transition: opacity 1.2s ease 0.6s, transform 1.6s var(--ease) 0.6s;
+    }
+
+    .motion .hero.is-ready .profile-photo .frame {
+      clip-path: circle(50% at 50% 50%);
+    }
+
+    .motion .hero.is-ready .profile-photo img {
+      transform: none;
+    }
+
+    .motion .hero.is-ready .profile-photo::before {
+      opacity: 1;
+      transform: none;
+    }
+
+    .hero .eyebrow {
+      margin: 0 0 22px;
+      color: var(--muted);
+      font-family: var(--ui);
+      font-size: 12px;
       font-weight: 500;
-      letter-spacing: 0;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      max-width: 700px;
+      margin: 0 0 24px;
+      font-size: clamp(36px, 5.2vw, 60px);
+      line-height: 1.07;
+      font-weight: 500;
       overflow-wrap: break-word;
     }
 
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
     .hero p {
-      max-width: 650px;
-      margin: 0 0 22px;
+      max-width: 640px;
+      margin: 0 0 24px;
       color: var(--soft);
-      font-size: clamp(18px, 1.9vw, 22px);
-      line-height: 1.45;
+      font-size: clamp(18px, 1.9vw, 21px);
+      line-height: 1.48;
       overflow-wrap: break-word;
     }
 
@@ -221,25 +526,222 @@
       line-height: 1.6;
     }
 
-    .hero a,
-    .list-row a,
-    .footer-links a {
-      border-bottom: 1px solid currentColor;
+    .hero p a,
+    .hero .status a,
+    .research-title a {
+      background-image: linear-gradient(currentColor, currentColor);
+      background-size: 100% 1px;
+      background-position: 0 100%;
+      background-repeat: no-repeat;
       padding-bottom: 1px;
+      transition: background-size 0.4s var(--ease), color 0.3s ease;
     }
 
-    main > section {
-      padding: 52px 0;
-      border-top: 1px solid var(--rule);
-      scroll-margin-top: 100px;
+    .hero p a:hover,
+    .hero .status a:hover {
+      background-size: 0% 1px;
+      background-position: 100% 100%;
     }
 
-    .section-head {
-      align-items: baseline;
-      margin-bottom: 22px;
+    /* Word-by-word headline entrance */
+    .motion .hero h1 .w {
+      display: inline-block;
+      opacity: 0;
+      transform: translate3d(0, 0.45em, 0);
+      filter: blur(8px);
+      transition:
+        opacity 0.9s var(--ease),
+        transform 1s var(--ease),
+        filter 0.9s var(--ease);
+      transition-delay: calc(var(--i) * 55ms + 250ms);
     }
 
-    .section-kicker {
+    .motion .hero.is-ready h1 .w {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+
+    .motion .hero .fade-late {
+      opacity: 0;
+      transform: translate3d(0, 16px, 0);
+      transition: opacity 1s ease, transform 1.1s var(--ease);
+      transition-delay: var(--d, 1100ms);
+    }
+
+    .motion .hero.is-ready .fade-late {
+      opacity: 1;
+      transform: none;
+    }
+
+    .scroll-cue {
+      position: absolute;
+      left: 50%;
+      bottom: 28px;
+      display: grid;
+      justify-items: center;
+      gap: 10px;
+      transform: translateX(-50%);
+      color: var(--muted);
+      font-family: var(--ui);
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .scroll-cue .line {
+      position: relative;
+      width: 1px;
+      height: 46px;
+      overflow: hidden;
+      background: var(--rule);
+    }
+
+    .scroll-cue .line::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1px;
+      height: 46px;
+      background: var(--ink);
+      transform: translateY(-100%);
+    }
+
+    .motion .scroll-cue .line::after {
+      animation: cue 2.2s var(--ease) infinite 1.8s;
+    }
+
+    @keyframes cue {
+      0% { transform: translateY(-100%); }
+      55% { transform: translateY(0); }
+      100% { transform: translateY(100%); }
+    }
+
+    /* ---------- Chapter I: timeline ---------- */
+
+    .story {
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 40px;
+    }
+
+    .story-aside {
+      position: sticky;
+      top: 34vh;
+      align-self: start;
+    }
+
+    .year-stack {
+      position: relative;
+      height: 1.1em;
+      font-size: clamp(64px, 8vw, 104px);
+      line-height: 1;
+      font-weight: 400;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+
+    .year-stack span {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      transform: translate3d(0, 0.35em, 0);
+      filter: blur(6px);
+      transition: opacity 0.6s var(--ease), transform 0.8s var(--ease), filter 0.6s var(--ease);
+    }
+
+    .year-stack span.is-active {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+
+    .year-stack span.is-past {
+      transform: translate3d(0, -0.35em, 0);
+    }
+
+    .story-aside .meta {
+      margin-top: 14px;
+      max-width: 200px;
+    }
+
+    .steps {
+      position: relative;
+      padding-left: 56px;
+    }
+
+    .steps::before,
+    .steps .line-fill {
+      content: "";
+      position: absolute;
+      left: 7px;
+      top: 10px;
+      bottom: 10px;
+      width: 1px;
+      background: var(--rule);
+    }
+
+    .steps .line-fill {
+      background: var(--accent);
+      transform-origin: 50% 0;
+      transform: scaleY(1);
+    }
+
+    .motion .steps .line-fill {
+      transform: scaleY(0);
+    }
+
+    .step {
+      position: relative;
+      min-height: 46vh;
+      padding-bottom: 72px;
+    }
+
+    .step:last-child {
+      min-height: 0;
+      padding-bottom: 0;
+    }
+
+    .step .dot {
+      position: absolute;
+      left: -56px;
+      top: 6px;
+      width: 15px;
+      height: 15px;
+      border: 1px solid var(--muted);
+      border-radius: 50%;
+      background: var(--paper);
+      transition: background 0.4s ease, border-color 0.4s ease, transform 0.5s var(--ease);
+    }
+
+    .step .dot::after {
+      content: "";
+      position: absolute;
+      inset: -7px;
+      border: 1px solid var(--accent);
+      border-radius: 50%;
+      opacity: 0;
+      transform: scale(0.6);
+    }
+
+    .step.is-active .dot,
+    .step.is-past .dot {
+      border-color: var(--accent);
+      background: var(--accent);
+    }
+
+    .motion .step.is-active .dot::after {
+      animation: ping 2.4s var(--ease) infinite;
+    }
+
+    @keyframes ping {
+      0% { opacity: 0.7; transform: scale(0.6); }
+      70%, 100% { opacity: 0; transform: scale(1.5); }
+    }
+
+    .step .role {
+      margin: 0 0 6px;
       color: var(--muted);
       font-family: var(--ui);
       font-size: 12px;
@@ -248,129 +750,249 @@
       text-transform: uppercase;
     }
 
-    h2 {
-      margin: 0;
-      font-size: 28px;
+    .step h3 {
+      max-width: 620px;
+      margin: 0 0 14px;
+      font-size: clamp(24px, 2.6vw, 32px);
       font-weight: 500;
       line-height: 1.2;
     }
 
-    .metric-grid {
-      row-gap: 26px;
-    }
-
-    .metric {
-      display: grid;
-      grid-template-columns: 112px minmax(0, 1fr);
-      gap: 20px;
-      align-items: baseline;
-      padding: 0 0 24px;
-      border-bottom: 1px solid var(--rule-soft);
-    }
-
-    .metric b {
-      font-size: 34px;
-      font-weight: 500;
-      line-height: 1;
-      font-variant-numeric: lining-nums tabular-nums;
-    }
-
-    .metric span {
+    .step p {
+      max-width: 600px;
+      margin: 0;
       color: var(--soft);
+      font-size: 18px;
+      line-height: 1.55;
     }
 
-    .list {
-      border-top: 1px solid var(--rule-soft);
+    .motion .step {
+      opacity: 0.32;
+      transition: opacity 0.7s ease;
     }
 
-    .list-row {
-      padding: 22px 0;
-      border-bottom: 1px solid var(--rule-soft);
+    .motion .step.is-active,
+    .motion .step.is-past {
+      opacity: 1;
     }
 
-    .year,
-    .meta {
+    /* ---------- Interlude: words light up as you scroll ---------- */
+
+    .interlude {
+      padding: 150px 0;
+      border-top: 1px solid var(--rule);
+      background: var(--paper-quiet);
+    }
+
+    .interlude blockquote {
+      max-width: 900px;
+      margin: 0 auto;
+      font-size: clamp(28px, 4.2vw, 50px);
+      line-height: 1.22;
+      font-weight: 400;
+    }
+
+    .interlude .w {
+      transition: color 0.35s ease;
+    }
+
+    .motion .interlude .w {
+      color: var(--ghost);
+    }
+
+    .motion .interlude .w.lit {
+      color: var(--ink);
+    }
+
+    .interlude cite {
+      display: block;
+      max-width: 900px;
+      margin: 34px auto 0;
       color: var(--muted);
       font-family: var(--ui);
       font-size: 13px;
-      line-height: 1.45;
+      font-style: normal;
     }
 
-    .item-title {
-      margin: 0 0 7px;
-      font-size: 20px;
+    /* ---------- Chapter II: research ---------- */
+
+    .papers {
+      display: grid;
+      gap: 0;
+      border-top: 1px solid var(--rule-soft);
+    }
+
+    .paper {
+      position: relative;
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr) 40px;
+      gap: 40px;
+      align-items: start;
+      padding: 34px 0;
+      border-bottom: 1px solid var(--rule-soft);
+    }
+
+    .paper::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: -1px;
+      width: 100%;
+      height: 1px;
+      background: var(--ink);
+      transform: scaleX(0);
+      transform-origin: 0 50%;
+      transition: transform 0.7s var(--ease);
+    }
+
+    .paper:hover::after {
+      transform: scaleX(1);
+    }
+
+    .paper .year {
+      font-size: 34px;
+      line-height: 1;
+      color: var(--muted);
+      font-variant-numeric: lining-nums;
+      transition: color 0.3s ease;
+    }
+
+    .paper:hover .year {
+      color: var(--accent);
+    }
+
+    .research-title {
+      margin: 0 0 9px;
+      font-size: 22px;
       font-weight: 500;
       line-height: 1.28;
     }
 
-    .item-text {
-      max-width: 670px;
+    .research-title a {
+      background-size: 0% 1px;
+    }
+
+    .paper:hover .research-title a {
+      background-size: 100% 1px;
+    }
+
+    .paper .item-text {
+      max-width: 640px;
       margin: 0;
       color: var(--soft);
     }
 
-    .identity-grid {
-      align-items: start;
-    }
-
-    .identity-card {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) 238px;
-      gap: 42px;
-      align-items: start;
-    }
-
-    .identity-card p {
-      margin: 0 0 18px;
-      color: var(--soft);
+    .paper .arrow {
+      align-self: center;
+      justify-self: end;
+      font-family: var(--ui);
       font-size: 20px;
-      line-height: 1.48;
-    }
-
-    .identity-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 11px;
-      margin-top: 28px;
-      font-family: var(--ui);
-      font-size: 13px;
-    }
-
-    .identity-links a {
-      padding: 7px 11px;
-      border: 1px solid var(--rule);
-      border-radius: 999px;
-      color: var(--accent);
-      background: var(--paper-quiet);
-    }
-
-    .resume-visual {
-      margin: 0;
-    }
-
-    .resume-visual img {
-      display: block;
-      width: 100%;
-      height: auto;
-      border: 1px solid var(--rule);
-      border-radius: 4px;
-      background: var(--paper-quiet);
-      box-shadow: 0 18px 50px rgba(20, 20, 19, 0.07);
-    }
-
-    .resume-visual figcaption {
-      margin-top: 10px;
       color: var(--muted);
-      font-family: var(--ui);
-      font-size: 12px;
-      line-height: 1.4;
+      transition: transform 0.45s var(--ease), color 0.3s ease;
     }
+
+    .paper:hover .arrow {
+      color: var(--accent);
+      transform: translate3d(6px, -6px, 0);
+    }
+
+    /* ---------- Chapter III: numbers ---------- */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 1px;
+      border: 1px solid var(--rule);
+      background: var(--rule);
+    }
+
+    .stat {
+      grid-column: span 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 26px;
+      min-height: 210px;
+      padding: 28px 26px;
+      background: var(--paper);
+      transition: background 0.4s ease;
+    }
+
+    /* Tiles stay solid (the grid lines come from the gaps); only their contents fade in. */
+    .motion .stat[data-reveal] {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+
+    .motion .stat > * {
+      opacity: 0;
+      transform: translate3d(0, 22px, 0);
+      transition: opacity 0.9s var(--ease) var(--d, 0ms), transform 1s var(--ease) var(--d, 0ms);
+    }
+
+    .motion .stat.is-in > * {
+      opacity: 1;
+      transform: none;
+    }
+
+    .stat:hover {
+      background: var(--paper-quiet);
+    }
+
+    .stat.wide {
+      grid-column: span 3;
+    }
+
+    .stat-num {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-size: clamp(48px, 6vw, 72px);
+      line-height: 1;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+
+    .stat-num b {
+      font-weight: 400;
+    }
+
+    .stat-num i {
+      font-size: 0.4em;
+      color: var(--muted);
+    }
+
+    .stat p {
+      max-width: 260px;
+      margin: 0;
+      color: var(--soft);
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    .stat .bar {
+      display: block;
+      height: 1px;
+      margin-bottom: 14px;
+      background: var(--accent);
+      transform-origin: 0 50%;
+      transition: transform 1.6s var(--ease) calc(var(--d, 0ms) + 200ms);
+    }
+
+    .motion .stat .bar {
+      transform: scaleX(0);
+    }
+
+    .motion .stat.is-in .bar {
+      transform: scaleX(0.35);
+    }
+
+    /* ---------- Chapter IV: projects ---------- */
 
     .projects-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 30px;
-      margin-top: 4px;
+      gap: 32px;
     }
 
     .project-card {
@@ -378,41 +1000,81 @@
       flex-direction: column;
     }
 
+    .project-card:nth-child(2) {
+      margin-top: 56px;
+    }
+
+    .project-card:nth-child(3) {
+      margin-top: 112px;
+    }
+
     .project-thumb {
+      position: relative;
       display: block;
+      overflow: hidden;
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+      background: var(--paper-quiet);
+      box-shadow: 0 14px 36px rgba(20, 20, 19, 0.08);
+      transition: box-shadow 0.4s ease, transform 0.5s var(--ease);
     }
 
     .project-thumb img {
       display: block;
       width: 100%;
       height: auto;
-      border: 1px solid var(--rule);
-      border-radius: 7px;
-      background: var(--paper-quiet);
-      box-shadow: 0 14px 36px rgba(20, 20, 19, 0.08);
-      transition: box-shadow 0.25s ease, transform 0.25s ease;
+      transform: scale(1.04);
+      transition: transform 0.9s var(--ease);
+    }
+
+    .project-card:hover .project-thumb {
+      box-shadow: 0 26px 54px rgba(20, 20, 19, 0.14);
+      transform: translate3d(0, -4px, 0);
     }
 
     .project-card:hover .project-thumb img {
-      box-shadow: 0 20px 46px rgba(20, 20, 19, 0.13);
-      transform: translateY(-2px);
+      transform: scale(1.09);
+    }
+
+    .motion .project-card .project-thumb {
+      clip-path: inset(100% 0 0 0 round 8px);
+      transition:
+        clip-path 1.3s var(--ease) var(--d, 0ms),
+        box-shadow 0.4s ease,
+        transform 0.5s var(--ease);
+    }
+
+    .motion .project-card .project-thumb img {
+      transform: scale(1.25);
+      transition: transform 1.6s var(--ease) var(--d, 0ms);
+    }
+
+    .motion .project-card.is-in .project-thumb {
+      clip-path: inset(0 0 0 0 round 8px);
+    }
+
+    .motion .project-card.is-in .project-thumb img {
+      transform: scale(1.04);
+    }
+
+    .motion .project-card.is-in:hover .project-thumb img {
+      transform: scale(1.09);
+      transition-duration: 0.9s;
+      transition-delay: 0ms;
+    }
+
+    .project-index {
+      margin: 20px 0 4px;
+      color: var(--muted);
+      font-family: var(--ui);
+      font-size: 12px;
     }
 
     .project-title {
-      margin: 17px 0 6px;
-      font-size: 19px;
+      margin: 0 0 6px;
+      font-size: 21px;
       font-weight: 500;
       line-height: 1.28;
-    }
-
-    .project-title a {
-      border-bottom: 1px solid transparent;
-      padding-bottom: 1px;
-    }
-
-    .project-title a:hover {
-      color: var(--accent);
-      border-bottom-color: currentColor;
     }
 
     .project-text {
@@ -422,8 +1084,189 @@
       line-height: 1.5;
     }
 
+    /* ---------- Epilogue: profile ---------- */
+
+    .identity-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 260px;
+      gap: 64px;
+      align-items: start;
+      margin-left: 280px;
+    }
+
+    .identity-card > div > p {
+      margin: 0 0 22px;
+      color: var(--soft);
+      font-size: 20px;
+      line-height: 1.48;
+    }
+
+    .interests {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 0 0 34px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .interests li {
+      padding: 8px 14px;
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      background: var(--paper-quiet);
+      font-size: 16px;
+      transition: border-color 0.3s ease, transform 0.4s var(--ease);
+    }
+
+    .interests li:hover {
+      border-color: var(--accent);
+      transform: translate3d(0, -2px, 0);
+    }
+
+    .motion .interests li {
+      opacity: 0;
+      transform: translate3d(0, 14px, 0) scale(0.96);
+      transition:
+        opacity 0.7s var(--ease) var(--d, 0ms),
+        transform 0.8s var(--ease) var(--d, 0ms),
+        border-color 0.3s ease;
+    }
+
+    .motion .interests.is-in li {
+      opacity: 1;
+      transform: none;
+    }
+
+    .identity-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 11px;
+      font-family: var(--ui);
+      font-size: 13px;
+    }
+
+    .identity-links a {
+      padding: 8px 13px;
+      border: 1px solid var(--rule);
+      border-radius: 999px;
+      color: var(--accent);
+      background: var(--paper);
+      transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .identity-links a:hover {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: var(--paper-quiet);
+    }
+
+    .resume-visual {
+      margin: 0;
+    }
+
+    .resume-visual a {
+      display: block;
+    }
+
+    .resume-visual img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--rule);
+      border-radius: 4px;
+      background: var(--paper-quiet);
+      box-shadow: 0 24px 60px rgba(20, 20, 19, 0.1);
+      transition: transform 0.6s var(--ease), box-shadow 0.5s ease;
+    }
+
+    .resume-visual a:hover img {
+      transform: translate3d(0, -4px, 0) rotate(-1deg);
+      box-shadow: 0 32px 70px rgba(20, 20, 19, 0.14);
+    }
+
+    .resume-visual figcaption {
+      margin-top: 12px;
+      color: var(--muted);
+      font-family: var(--ui);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    /* ---------- Closing ---------- */
+
+    .closing {
+      padding: 140px 0 120px;
+      border-top: 1px solid var(--rule);
+      text-align: center;
+    }
+
+    .closing .kicker {
+      justify-content: center;
+    }
+
+    .closing .kicker::after {
+      content: "";
+      width: 36px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    .closing h2 {
+      max-width: 760px;
+      margin: 0 auto;
+      font-size: clamp(32px, 4.6vw, 54px);
+      line-height: 1.12;
+    }
+
+    .closing .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 40px;
+      font-family: var(--ui);
+      font-size: 14px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 22px;
+      border: 1px solid var(--ink);
+      border-radius: 999px;
+      transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .btn span {
+      transition: transform 0.4s var(--ease);
+    }
+
+    .btn:hover span {
+      transform: translate3d(4px, 0, 0);
+    }
+
+    .btn.primary {
+      background: var(--ink);
+      color: var(--paper-quiet);
+    }
+
+    .btn.primary:hover {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: var(--paper-quiet);
+    }
+
+    .btn.ghost:hover {
+      border-color: var(--accent);
+    }
+
     .site-footer {
-      padding-top: 48px;
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 40px;
+      padding: 40px 0 64px;
       border-top: 1px solid var(--rule);
       color: var(--muted);
       font-family: var(--ui);
@@ -439,34 +1282,80 @@
       color: var(--ink);
     }
 
+    .footer-links a {
+      text-decoration: underline;
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
     .footer-links a + a::before {
       content: "/";
+      display: inline-block;
       color: var(--rule);
       margin: 0 9px;
     }
 
-    @media (max-width: 760px) {
-      body {
-        background-size: 100% 100%, auto;
-      }
+    /* ---------- Responsive ---------- */
 
-      .page {
-        width: min(100% - 32px, 980px);
-        padding-top: 116px;
-      }
-
-      .site-header,
-      .site-footer,
-      .section-head,
-      .list-row,
-      .identity-grid,
-      .metric-grid {
+    @media (max-width: 900px) {
+      .chapter-head,
+      .story,
+      .site-footer {
         grid-template-columns: 1fr;
-        gap: 14px;
+        gap: 18px;
+      }
+
+      .numeral {
+        font-size: 84px;
+      }
+
+      .paper {
+        grid-template-columns: 90px minmax(0, 1fr) 24px;
+        gap: 20px;
+      }
+
+      .paper .year {
+        font-size: 22px;
+      }
+
+      .bridge,
+      .identity-card {
+        margin-left: 0;
+      }
+
+      .story-aside {
+        display: none;
+      }
+
+      .step {
+        min-height: 0;
+        padding-bottom: 56px;
+      }
+
+      .motion .step {
+        opacity: 1;
+      }
+
+      .stat,
+      .stat.wide {
+        grid-column: span 3;
+      }
+
+      .stat:first-child {
+        grid-column: span 6;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .wrap {
+        width: min(100% - 32px, var(--wrap));
       }
 
       .site-header {
-        padding: 18px 16px 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        padding: 14px 16px 12px;
       }
 
       .nav {
@@ -479,63 +1368,110 @@
       }
 
       .hero {
+        padding: 150px 0 120px;
+      }
+
+      .hero-inner {
         grid-template-columns: 1fr;
-        gap: 28px;
-        padding-bottom: 58px;
+        gap: 34px;
       }
 
       .profile-photo {
-        width: 168px;
+        width: 150px;
+        margin-left: 14px;
       }
 
-      main > section {
-        padding: 40px 0;
+      .chapter {
+        padding: 84px 0;
+        scroll-margin-top: 90px;
       }
 
-      .metric {
-        grid-template-columns: 92px minmax(0, 1fr);
+      .chapter-head {
+        margin-bottom: 40px;
       }
 
-      .identity-card {
-        grid-template-columns: 1fr;
+      .interlude {
+        padding: 100px 0;
       }
 
-      .resume-visual {
-        max-width: 260px;
+      .bridge {
+        margin-top: 56px;
+        font-size: 17px;
       }
 
       .projects-grid {
         grid-template-columns: 1fr;
-        gap: 26px;
-        max-width: 360px;
+        gap: 40px;
+        max-width: 420px;
+      }
+
+      .project-card:nth-child(2),
+      .project-card:nth-child(3) {
+        margin-top: 0;
+      }
+
+      .identity-card {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .resume-visual {
+        max-width: 240px;
+      }
+
+      .closing {
+        padding: 100px 0 90px;
       }
     }
 
-    @media (max-width: 460px) {
-      .page {
-        width: min(100% - 24px, 980px);
-      }
-
+    @media (max-width: 520px) {
       .hero h1 {
         font-size: 34px;
-        line-height: 1.08;
       }
 
       .hero p,
-      .identity-card p {
+      .identity-card > div > p,
+      .step p {
         font-size: 17px;
       }
 
-      .metric {
+      .steps {
+        padding-left: 36px;
+      }
+
+      .step .dot {
+        left: -36px;
+      }
+
+      .paper {
         grid-template-columns: 1fr;
         gap: 8px;
+      }
+
+      .paper .arrow {
+        display: none;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .stat,
+      .stat.wide,
+      .stat:first-child {
+        grid-column: auto;
+        min-height: 0;
+      }
+
+      .scroll-cue {
+        bottom: 20px;
       }
     }
   </style>
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="#">Ardik Ardianto</a>
+    <a class="brand" href="#top">Ardik Ardianto</a>
     <nav class="nav" aria-label="Primary navigation">
       <a href="#work">Work</a>
       <a href="#research">Research</a>
@@ -553,180 +1489,285 @@
       </details>
       <a href="Ardianto's Resume.pdf">Resume</a>
     </nav>
+    <span class="progress" aria-hidden="true"></span>
   </header>
-  <div class="page">
-    <main>
-      <section class="hero" aria-labelledby="intro-title">
+
+  <nav class="rail" aria-label="Story chapters">
+    <ol>
+      <li><a href="#top" data-chapter="top"><span class="label">Prologue</span><span class="tick"></span></a></li>
+      <li><a href="#work" data-chapter="work"><span class="label">I · Work</span><span class="tick"></span></a></li>
+      <li><a href="#research" data-chapter="research"><span class="label">II · Research</span><span class="tick"></span></a></li>
+      <li><a href="#numbers" data-chapter="numbers"><span class="label">III · Numbers</span><span class="tick"></span></a></li>
+      <li><a href="#projects" data-chapter="projects"><span class="label">IV · Projects</span><span class="tick"></span></a></li>
+      <li><a href="#profile" data-chapter="profile"><span class="label">Epilogue</span><span class="tick"></span></a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <!-- Prologue -->
+    <section class="hero" id="top" aria-labelledby="intro-title">
+      <div class="wrap hero-inner">
         <figure class="profile-photo">
-          <img src="assets/Profile.jpg" alt="Portrait of Ardik Ardianto" width="536" height="600">
+          <div class="frame">
+            <img src="assets/Profile.jpg" alt="Portrait of Ardik Ardianto" width="536" height="600">
+          </div>
         </figure>
         <div>
-          <h1 id="intro-title">Hey, I’m Ardik Ardianto. I’m a lecturer, translator &amp; researcher based in Indonesia.</h1>
-          <p>Right now, I teach English Language and Literature at Universitas Terbuka, build translation practice through <a href="https://www.transaintika.com">TranSaintika</a>, and write on language in use across translation, discourse, and applied linguistics.</p>
-          <div class="status">
+          <p class="eyebrow fade-late" style="--d: 150ms">Prologue</p>
+          <h1 id="intro-title" data-split>Hey, I’m Ardik Ardianto. I’m a <em>lecturer, translator &amp; researcher</em> based in Indonesia.</h1>
+          <p class="fade-late">Right now, I teach English Language and Literature at Universitas Terbuka, build translation practice through <a href="https://www.transaintika.com">TranSaintika</a>, and write on language in use across translation, discourse, and applied linguistics.</p>
+          <div class="status fade-late" style="--d: 1300ms">
             ORCID <a href="https://orcid.org/0000-0001-8642-5840">0000-0001-8642-5840</a> ·
             <a href="https://www.researchgate.net/profile/Ardik-Ardianto">ResearchGate</a> ·
             <a href="http://www.linkedin.com/in/ardikardianto">LinkedIn</a>
           </div>
         </div>
-      </section>
+      </div>
+      <a class="scroll-cue fade-late" href="#work" style="--d: 1700ms">
+        <span>Scroll to begin</span>
+        <span class="line" aria-hidden="true"></span>
+      </a>
+    </section>
 
-      <section id="work" aria-labelledby="work-title">
-        <div class="section-head">
-          <div class="section-kicker">01 / Work</div>
-          <h2 id="work-title">Academic teaching, translation practice, and editorial judgment.</h2>
-        </div>
-        <div class="list">
-          <article class="list-row">
-            <div class="year">2022 - Present</div>
-            <div>
-              <h3 class="item-title">Lecturer · Universitas Terbuka</h3>
-              <p class="item-text">Teaching and research in English language and literature, with classroom work connected to publishable inquiry in sociolinguistics, discourse analysis, translation, and English for Specific Purposes.</p>
-            </div>
-          </article>
-          <article class="list-row">
-            <div class="year">Founder</div>
-            <div>
-              <h3 class="item-title">TranSaintika · Language Services</h3>
-              <p class="item-text">A Malang-based practice built around academically grounded translation judgment: terminology control, genre sensitivity, discourse-level equivalence, and context-aware Indonesian-English transfer.</p>
-            </div>
-          </article>
-          <article class="list-row">
-            <div class="year">2016 - 2022</div>
-            <div>
-              <h3 class="item-title">Academic and Legal Translator · UMM Language Center &amp; Palawa Karya</h3>
-              <p class="item-text">High-stakes academic and legal translation shaped the professional base later carried into translation studies research, graduate linguistics training, and scholarly editing.</p>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section aria-labelledby="numbers-title">
-        <div class="section-head">
-          <div class="section-kicker">02 / In Numbers</div>
-          <h2 id="numbers-title">A public scholarly record with a practical translation track.</h2>
-        </div>
-        <div class="metric-grid">
-          <div></div>
+    <!-- Chapter I -->
+    <section class="chapter" id="work" aria-labelledby="work-title">
+      <div class="wrap">
+        <header class="chapter-head" data-reveal>
+          <div class="numeral" aria-hidden="true" data-parallax="-0.12">I</div>
           <div>
-            <div class="metric">
-              <b>10yrs</b>
-              <span>translation, language teaching, and research track since 2016</span>
+            <div class="kicker">Chapter One · Work</div>
+            <h2 id="work-title">Academic teaching, translation practice, and editorial judgment.</h2>
+            <p class="lede">The story starts at a translation desk, where every word carried legal or academic weight, and moves into the classroom.</p>
+          </div>
+        </header>
+
+        <div class="story">
+          <aside class="story-aside" aria-hidden="true">
+            <div class="year-stack">
+              <span class="is-active" data-year="0">2016</span>
+              <span data-year="1">2022</span>
+              <span data-year="2">Now</span>
             </div>
-            <div class="metric">
-              <b data-metric="orcid-works">21</b>
-              <span>ORCID-listed publications, chapters, proceedings, and theses</span>
-            </div>
-            <div class="metric">
-              <b data-metric="researchgate-reads">11,704</b>
-              <span>ResearchGate reads across the public research profile</span>
-            </div>
-            <div class="metric">
-              <b data-metric="researchgate-citations">68</b>
-              <span>ResearchGate citations</span>
-            </div>
-            <div class="metric">
-              <b data-metric="google-scholar-citations">80</b>
-              <span>Google Scholar citations</span>
-            </div>
+            <div class="meta">From translator to lecturer to founder.</div>
+          </aside>
+
+          <div class="steps">
+            <span class="line-fill" aria-hidden="true"></span>
+
+            <article class="step is-active">
+              <span class="dot" aria-hidden="true"></span>
+              <p class="role">The foundation · 2016 - 2022</p>
+              <h3>Academic and Legal Translator · UMM Language Center &amp; Palawa Karya</h3>
+              <p>High-stakes academic and legal translation shaped the professional base later carried into translation studies research, graduate linguistics training, and scholarly editing.</p>
+            </article>
+
+            <article class="step">
+              <span class="dot" aria-hidden="true"></span>
+              <p class="role">The classroom · 2022 - Present</p>
+              <h3>Lecturer · Universitas Terbuka</h3>
+              <p>Teaching and research in English language and literature, with classroom work connected to publishable inquiry in sociolinguistics, discourse analysis, translation, and English for Specific Purposes.</p>
+            </article>
+
+            <article class="step">
+              <span class="dot" aria-hidden="true"></span>
+              <p class="role">The practice · Founder</p>
+              <h3>TranSaintika · Language Services</h3>
+              <p>A Malang-based practice built around academically grounded translation judgment: terminology control, genre sensitivity, discourse-level equivalence, and context-aware Indonesian-English transfer.</p>
+            </article>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="research" aria-labelledby="research-title">
-        <div class="section-head">
-          <div class="section-kicker">03 / Research</div>
-          <h2 id="research-title">Selected work across translation style, contextual configuration, sociolinguistics, and discourse.</h2>
-        </div>
-        <div class="list">
-          <article class="list-row">
+    <!-- Interlude -->
+    <section class="interlude" aria-label="Research identity">
+      <div class="wrap">
+        <blockquote data-scrub>My core work sits where texts meet institutions: how meaning travels across language, genre, ideology, classroom practice, and publication standards.</blockquote>
+        <cite data-reveal>Research identity</cite>
+      </div>
+    </section>
+
+    <!-- Chapter II -->
+    <section class="chapter" id="research" aria-labelledby="research-title">
+      <div class="wrap">
+        <header class="chapter-head" data-reveal>
+          <div class="numeral" aria-hidden="true" data-parallax="-0.12">II</div>
+          <div>
+            <div class="kicker">Chapter Two · Research</div>
+            <h2 id="research-title">Selected work across translation style, contextual configuration, sociolinguistics, and discourse.</h2>
+          </div>
+        </header>
+
+        <div class="papers" data-stagger>
+          <article class="paper" data-reveal="left">
             <div class="year">2025</div>
             <div>
-              <h3 class="item-title"><a href="https://doi.org/10.21107/prosodi.v19i2.31671">American English use in Indonesian hotel contexts</a></h3>
+              <h3 class="research-title"><a href="https://doi.org/10.21107/prosodi.v19i2.31671">American English use in Indonesian hotel contexts</a></h3>
               <p class="item-text">A sociolinguistic observation of English as it appears in hospitality settings, reading usage as practical language behavior rather than abstract correctness.</p>
             </div>
+            <span class="arrow" aria-hidden="true">↗</span>
           </article>
-          <article class="list-row">
+          <article class="paper" data-reveal="left">
             <div class="year">2025</div>
             <div>
-              <h3 class="item-title"><a href="https://doi.org/10.32996/ijtis.2025.5.3.1">Interjections and translation strategies in <span lang="en">The Midnight Library</span></a></h3>
+              <h3 class="research-title"><a href="https://doi.org/10.32996/ijtis.2025.5.3.1">Interjections and translation strategies in <span lang="en">The Midnight Library</span></a></h3>
               <p class="item-text">A translation studies piece focused on types, functions, and transfer choices in literary dialogue and emotional texture.</p>
             </div>
+            <span class="arrow" aria-hidden="true">↗</span>
           </article>
-          <article class="list-row">
+          <article class="paper" data-reveal="left">
             <div class="year">2024</div>
             <div>
-              <h3 class="item-title"><a href="https://doi.org/10.5430/wjel.v14n2p56">Contextual configuration of formal and informal introductions</a></h3>
+              <h3 class="research-title"><a href="https://doi.org/10.5430/wjel.v14n2p56">Contextual configuration of formal and informal introductions</a></h3>
               <p class="item-text">Work in Systemic Functional Linguistics that treats introductions as patterned social action shaped by field, tenor, and mode.</p>
             </div>
+            <span class="arrow" aria-hidden="true">↗</span>
           </article>
-          <article class="list-row">
+          <article class="paper" data-reveal="left">
             <div class="year">2024</div>
             <div>
-              <h3 class="item-title"><a href="https://doi.org/10.53696/27753719.41127">Code-switching and slang among Gen Z speakers</a></h3>
+              <h3 class="research-title"><a href="https://doi.org/10.53696/27753719.41127">Code-switching and slang among Gen Z speakers</a></h3>
               <p class="item-text">A study of everyday language dynamics, social identity, and the expressive pressure inside contemporary communication.</p>
             </div>
+            <span class="arrow" aria-hidden="true">↗</span>
           </article>
         </div>
-      </section>
 
-      <section id="projects" aria-labelledby="projects-title">
-        <div class="section-head">
-          <div class="section-kicker">04 / Projects</div>
-          <h2 id="projects-title">Department web tools I designed and built for teaching, research, and translation.</h2>
+        <p class="bridge" data-reveal>Each paper adds to a public record, and the record has started to add up.</p>
+      </div>
+    </section>
+
+    <!-- Chapter III -->
+    <section class="chapter" id="numbers" aria-labelledby="numbers-title">
+      <div class="wrap">
+        <header class="chapter-head" data-reveal>
+          <div class="numeral" aria-hidden="true" data-parallax="-0.12">III</div>
+          <div>
+            <div class="kicker">Chapter Three · In Numbers</div>
+            <h2 id="numbers-title">A public scholarly record with a practical translation track.</h2>
+          </div>
+        </header>
+
+        <div class="stats" data-stagger>
+          <div class="stat wide" data-reveal>
+            <div class="stat-num"><b data-count>10</b><i>yrs</i></div>
+            <div><span class="bar"></span><p>translation, language teaching, and research track since 2016</p></div>
+          </div>
+          <div class="stat wide" data-reveal>
+            <div class="stat-num"><b data-metric="orcid-works">21</b></div>
+            <div><span class="bar"></span><p>ORCID-listed publications, chapters, proceedings, and theses</p></div>
+          </div>
+          <div class="stat" data-reveal>
+            <div class="stat-num"><b data-metric="researchgate-reads">11,704</b></div>
+            <div><span class="bar"></span><p>ResearchGate reads across the public research profile</p></div>
+          </div>
+          <div class="stat" data-reveal>
+            <div class="stat-num"><b data-metric="researchgate-citations">68</b></div>
+            <div><span class="bar"></span><p>ResearchGate citations</p></div>
+          </div>
+          <div class="stat" data-reveal>
+            <div class="stat-num"><b data-metric="google-scholar-citations">80</b></div>
+            <div><span class="bar"></span><p>Google Scholar citations</p></div>
+          </div>
         </div>
-        <div class="projects-grid">
-          <article class="project-card">
+
+        <p class="bridge" data-reveal>Alongside the writing, some questions were easier to answer by building something.</p>
+      </div>
+    </section>
+
+    <!-- Chapter IV -->
+    <section class="chapter" id="projects" aria-labelledby="projects-title">
+      <div class="wrap">
+        <header class="chapter-head" data-reveal>
+          <div class="numeral" aria-hidden="true" data-parallax="-0.12">IV</div>
+          <div>
+            <div class="kicker">Chapter Four · Projects</div>
+            <h2 id="projects-title">Department web tools I designed and built for teaching, research, and translation.</h2>
+          </div>
+        </header>
+
+        <div class="projects-grid" data-stagger="160">
+          <article class="project-card" data-reveal>
             <a class="project-thumb" href="https://dept-dashboard.vercel.app" target="_blank" rel="noopener">
               <img src="assets/project-dept-dashboard.jpg" alt="Screenshot of the Department Dashboard homepage" width="1200" height="750" loading="lazy">
             </a>
+            <div class="project-index">01</div>
             <h3 class="project-title"><a href="https://dept-dashboard.vercel.app" target="_blank" rel="noopener">Department Dashboard</a></h3>
             <p class="project-text">A single portal where tutors view their profile by ID and administrators manage lecturers, courses, and term plotting.</p>
           </article>
-          <article class="project-card">
+          <article class="project-card" data-reveal>
             <a class="project-thumb" href="https://dept-publications.vercel.app" target="_blank" rel="noopener">
               <img src="assets/project-dept-publications.jpg" alt="Screenshot of the Department Publications homepage" width="1200" height="750" loading="lazy">
             </a>
+            <div class="project-index">02</div>
             <h3 class="project-title"><a href="https://dept-publications.vercel.app" target="_blank" rel="noopener">Department Publications</a></h3>
             <p class="project-text">A focused dashboard tracking journal publications, authors, indexes, and research fields across the English Department.</p>
           </article>
-          <article class="project-card">
+          <article class="project-card" data-reveal>
             <a class="project-thumb" href="https://translation-laboratory.vercel.app" target="_blank" rel="noopener">
               <img src="assets/project-translation-laboratory.jpg" alt="Screenshot of the Digital Translation Laboratory homepage" width="1200" height="750" loading="lazy">
             </a>
+            <div class="project-index">03</div>
             <h3 class="project-title"><a href="https://translation-laboratory.vercel.app" target="_blank" rel="noopener">Digital Translation Laboratory</a></h3>
             <p class="project-text">A guided in-browser workspace for students to practice, review, and manage translation projects segment by segment.</p>
           </article>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="profile" aria-labelledby="profile-title">
-        <div class="section-head">
-          <div class="section-kicker">05 / Profile</div>
-          <h2 id="profile-title">A linguist’s profile, built from teaching rooms and translation desks.</h2>
-        </div>
-        <div class="identity-grid">
-          <div class="meta">Research identity</div>
-          <div class="identity-card">
-            <div>
-              <p>My core work sits where texts meet institutions: how meaning travels across language, genre, ideology, classroom practice, and publication standards.</p>
-              <p>Current interests include translation strategies, discourse analysis, ESP materials, sociolinguistic observation, machine translation correspondence, and student-facing research collaboration.</p>
-              <div class="identity-links">
-                <a href="https://orcid.org/0000-0001-8642-5840">ORCID</a>
-                <a href="http://www.scopus.com/inward/authorDetails.url?authorID=58844250600&partnerID=MN8TOARS">Scopus</a>
-                <a href="https://scholar.google.com/citations?user=LATwILMAAAAJ&hl=id&oi=ao">Google Scholar</a>
-                <a href="Ardianto's Resume.pdf">Download resume</a>
-              </div>
-            </div>
-            <figure class="resume-visual">
-              <img src="assets/resume-preview.png" alt="Preview of Ardik Ardianto's two-page resume">
-              <figcaption>Resume source used for this homepage.</figcaption>
-            </figure>
+    <!-- Epilogue -->
+    <section class="chapter" id="profile" aria-labelledby="profile-title">
+      <div class="wrap">
+        <header class="chapter-head" data-reveal>
+          <div class="numeral" aria-hidden="true" data-parallax="-0.12">V</div>
+          <div>
+            <div class="kicker">Epilogue · Profile</div>
+            <h2 id="profile-title">A linguist’s profile, built from teaching rooms and translation desks.</h2>
           </div>
-        </div>
-      </section>
-    </main>
+        </header>
 
+        <div class="identity-card">
+          <div>
+            <p data-reveal>Current interests include:</p>
+            <ul class="interests" data-reveal-group>
+              <li>translation strategies</li>
+              <li>discourse analysis</li>
+              <li>ESP materials</li>
+              <li>sociolinguistic observation</li>
+              <li>machine translation correspondence</li>
+              <li>student-facing research collaboration</li>
+            </ul>
+            <div class="identity-links" data-reveal>
+              <a href="https://orcid.org/0000-0001-8642-5840">ORCID</a>
+              <a href="http://www.scopus.com/inward/authorDetails.url?authorID=58844250600&partnerID=MN8TOARS">Scopus</a>
+              <a href="https://scholar.google.com/citations?user=LATwILMAAAAJ&hl=id&oi=ao">Google Scholar</a>
+              <a href="Ardianto's Resume.pdf">Download resume</a>
+            </div>
+          </div>
+          <figure class="resume-visual" data-reveal="tilt">
+            <a href="Ardianto's Resume.pdf">
+              <img src="assets/resume-preview.png" alt="Preview of Ardik Ardianto's two-page resume" loading="lazy">
+            </a>
+            <figcaption>Resume source used for this homepage.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- Closing -->
+    <section class="closing" aria-labelledby="closing-title">
+      <div class="wrap" data-reveal>
+        <div class="kicker">To be continued</div>
+        <h2 id="closing-title">Have a text, a class, or a research question in mind? Let’s talk.</h2>
+        <div class="actions">
+          <a class="btn primary" href="https://wa.me/+6282244605209">Contact on WhatsApp <span aria-hidden="true">→</span></a>
+          <a class="btn ghost" href="Ardianto's Resume.pdf">Download resume <span aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="wrap">
     <footer class="site-footer">
       <div>2026 - Ardik Ardianto</div>
       <div class="footer-note">
@@ -737,28 +1778,241 @@
       </div>
     </footer>
   </div>
+
   <script>
-    const folderMenu = document.querySelector(".folder-menu");
+    (function () {
+      /* ---------- Folder menu ---------- */
+      const folderMenu = document.querySelector(".folder-menu");
 
-    if (folderMenu) {
-      document.addEventListener("click", (event) => {
-        if (!folderMenu.contains(event.target)) {
-          folderMenu.removeAttribute("open");
-        }
-      });
+      if (folderMenu) {
+        document.addEventListener("click", (event) => {
+          if (!folderMenu.contains(event.target)) {
+            folderMenu.removeAttribute("open");
+          }
+        });
 
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          folderMenu.removeAttribute("open");
-        }
-      });
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            folderMenu.removeAttribute("open");
+          }
+        });
 
-      folderMenu.querySelectorAll("a").forEach((link) => {
-        link.addEventListener("click", () => {
-          folderMenu.removeAttribute("open");
+        folderMenu.querySelectorAll("a").forEach((link) => {
+          link.addEventListener("click", () => {
+            folderMenu.removeAttribute("open");
+          });
+        });
+      }
+
+      const motion = document.documentElement.classList.contains("motion");
+      const hero = document.querySelector(".hero");
+      const progressBar = document.querySelector(".progress");
+
+      /* ---------- Split text into words (keeps nested tags like <em>) ---------- */
+      function splitWords(root) {
+        const words = [];
+        const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+        const nodes = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode);
+
+        nodes.forEach((node) => {
+          const parts = node.textContent.split(/(\s+)/);
+          const frag = document.createDocumentFragment();
+          parts.forEach((part) => {
+            if (!part) return;
+            if (/^\s+$/.test(part)) {
+              frag.appendChild(document.createTextNode(part));
+            } else {
+              const span = document.createElement("span");
+              span.className = "w";
+              span.textContent = part;
+              frag.appendChild(span);
+              words.push(span);
+            }
+          });
+          node.parentNode.replaceChild(frag, node);
+        });
+        return words;
+      }
+
+      const scrub = document.querySelector("[data-scrub]");
+      let scrubWords = [];
+
+      if (motion) {
+        document.querySelectorAll("[data-split]").forEach((el) => {
+          splitWords(el).forEach((w, i) => w.style.setProperty("--i", i));
+        });
+        if (scrub) scrubWords = splitWords(scrub);
+      }
+
+      /* ---------- Stagger delays ---------- */
+      document.querySelectorAll("[data-stagger]").forEach((group) => {
+        const step = Number(group.dataset.stagger) || 110;
+        group.querySelectorAll(":scope > [data-reveal]").forEach((child, i) => {
+          child.style.setProperty("--d", i * step + "ms");
         });
       });
-    }
+
+      document.querySelectorAll("[data-reveal-group]").forEach((group) => {
+        Array.from(group.children).forEach((child, i) => {
+          child.style.setProperty("--d", i * 70 + "ms");
+        });
+      });
+
+      /* ---------- Count-up numbers ---------- */
+      function countUp(el) {
+        if (el.dataset.counted) return;
+        el.dataset.counted = "1";
+        const original = el.textContent.trim();
+        const target = parseFloat(original.replace(/,/g, ""));
+        if (!isFinite(target)) return;
+        const useCommas = original.includes(",");
+        const duration = 1800;
+        const start = performance.now();
+        const format = (n) => (useCommas ? Math.round(n).toLocaleString("en-US") : String(Math.round(n)));
+
+        function frame(now) {
+          const t = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(2, -10 * t);
+          el.textContent = t < 1 ? format(target * eased) : original;
+          if (t < 1) requestAnimationFrame(frame);
+        }
+        el.textContent = format(0);
+        requestAnimationFrame(frame);
+      }
+
+      /* ---------- Reveal on scroll ---------- */
+      const revealTargets = document.querySelectorAll("[data-reveal], [data-reveal-group]");
+
+      if (!motion || !("IntersectionObserver" in window)) {
+        revealTargets.forEach((el) => el.classList.add("is-in"));
+      } else {
+        const revealObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              const el = entry.target;
+              el.classList.add("is-in");
+              el.querySelectorAll(".stat-num b").forEach(countUp);
+              revealObserver.unobserve(el);
+            });
+          },
+          { rootMargin: "0px 0px -12% 0px", threshold: 0.12 }
+        );
+        revealTargets.forEach((el) => revealObserver.observe(el));
+      }
+
+      /* ---------- Current chapter (header nav + rail) ---------- */
+      const navLinks = document.querySelectorAll(".nav > a[href^='#'], .rail a");
+      const chapters = Array.from(document.querySelectorAll("main section[id]"));
+
+      function setCurrent(id) {
+        navLinks.forEach((link) => {
+          link.classList.toggle("is-current", link.getAttribute("href") === "#" + id);
+        });
+      }
+
+      /* ---------- Timeline ---------- */
+      const steps = Array.from(document.querySelectorAll(".step"));
+      const stepsWrap = document.querySelector(".steps");
+      const lineFill = document.querySelector(".line-fill");
+      const years = Array.from(document.querySelectorAll(".year-stack span"));
+      let activeStep = 0;
+
+      function updateTimeline(vh) {
+        if (!stepsWrap) return;
+        const rect = stepsWrap.getBoundingClientRect();
+        const anchor = vh * 0.55;
+        const progress = Math.min(1, Math.max(0, (anchor - rect.top) / rect.height));
+        if (lineFill) lineFill.style.transform = "scaleY(" + progress.toFixed(4) + ")";
+
+        let current = 0;
+        steps.forEach((step, i) => {
+          if (step.getBoundingClientRect().top < anchor) current = i;
+        });
+
+        if (current !== activeStep || !steps[current].classList.contains("is-active")) {
+          activeStep = current;
+          steps.forEach((step, i) => {
+            step.classList.toggle("is-active", i === current);
+            step.classList.toggle("is-past", i < current);
+          });
+          years.forEach((year, i) => {
+            year.classList.toggle("is-active", i === current);
+            year.classList.toggle("is-past", i < current);
+          });
+        }
+      }
+
+      /* ---------- Interlude word scrub ---------- */
+      function updateScrub(vh) {
+        if (!scrub || !scrubWords.length) return;
+        const rect = scrub.getBoundingClientRect();
+        const start = vh * 0.85;
+        const end = vh * 0.35;
+        const progress = Math.min(1, Math.max(0, (start - rect.top) / (start - end + rect.height * 0.5)));
+        const lit = Math.round(progress * scrubWords.length);
+        scrubWords.forEach((w, i) => w.classList.toggle("lit", i < lit));
+      }
+
+      /* ---------- Parallax + hero exit ---------- */
+      const parallaxEls = Array.from(document.querySelectorAll("[data-parallax]"));
+      const heroInner = document.querySelector(".hero-inner");
+
+      function updateParallax(vh) {
+        parallaxEls.forEach((el) => {
+          const rect = el.getBoundingClientRect();
+          const offset = rect.top + rect.height / 2 - vh / 2;
+          el.style.transform = "translate3d(0," + (offset * Number(el.dataset.parallax)).toFixed(1) + "px,0)";
+        });
+
+        if (heroInner && hero) {
+          const h = hero.offsetHeight;
+          const p = Math.min(1, Math.max(0, window.scrollY / h));
+          heroInner.style.transform = "translate3d(0," + (p * -70).toFixed(1) + "px,0)";
+          heroInner.style.opacity = (1 - p * 0.9).toFixed(3);
+        }
+      }
+
+      /* ---------- Scroll loop ---------- */
+      let ticking = false;
+
+      function onScroll() {
+        const vh = window.innerHeight;
+        const doc = document.documentElement;
+        const max = doc.scrollHeight - vh;
+        if (progressBar) progressBar.style.transform = "scaleX(" + (max > 0 ? window.scrollY / max : 0).toFixed(4) + ")";
+
+        let current = chapters[0] ? chapters[0].id : "";
+        chapters.forEach((section) => {
+          if (section.getBoundingClientRect().top < vh * 0.4) current = section.id;
+        });
+        setCurrent(current);
+
+        if (motion) {
+          updateTimeline(vh);
+          updateScrub(vh);
+          updateParallax(vh);
+        }
+        ticking = false;
+      }
+
+      function requestTick() {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(onScroll);
+        }
+      }
+
+      window.addEventListener("scroll", requestTick, { passive: true });
+      window.addEventListener("resize", requestTick);
+      onScroll();
+
+      /* ---------- Kick off the prologue ---------- */
+      if (hero) {
+        requestAnimationFrame(() => requestAnimationFrame(() => hero.classList.add("is-ready")));
+      }
+    })();
   </script>
 </body>
 </html>
